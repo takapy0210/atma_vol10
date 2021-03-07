@@ -6,9 +6,9 @@ SETTING:
   TRAIN_FILE_NAME: 'train.pkl' # 学習に使用するtrainファイル名
   TEST_FILE_NAME: 'test.pkl' # 予測対象のtestファイル名
   SLACK_NOTIFY: False
-  EXPERIMENT_NAME: 'probspace_youtube'
+  EXPERIMENT_NAME: 'atmaCup_vol9'
   TRACKING_DIR: '/Users/takapy/python/competition/mlflow/mlruns'
-  TARGET_COL: 'y' # 目的変数のカラム名
+  TARGET_COL: 'likes' # 目的変数のカラム名
   METRICS: 'RMSLE' # 評価指標 [MSE / RMSE / RMSLE / MAE / ACC / CUSTOM]が使用可能
   CALC_SHAP: False # SHAPでの重要度を計算するか否か[True or False]
   SAVE_TRAIN_PRED: True # 学習データでの推論結果を保存するか否か[True or False]
