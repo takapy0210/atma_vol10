@@ -1,6 +1,6 @@
 """特徴量生成スクリプト
     実行コマンド
-        docker exec -it 3caa389926c5 /bin/bash -c "cd ./atmaCup_vol10/scripts && python3 create_train_test_data.py"
+        docker exec -it 26df224b1ba4 /bin/bash -c "cd ./atmaCup_vol10/scripts && python3 create_train_test_data.py"
 
 """
 
@@ -18,7 +18,7 @@ from PIL import ImageColor
 from tqdm import tqdm as tqdm
 
 from takaggle.feature import category_encoder, feature_engineering
-from takaggle.training import util
+from takaggle.training.util import Logger
 
 tqdm.pandas()
 warnings.filterwarnings("ignore")
@@ -137,11 +137,35 @@ def preprocessing_material(input_df):
 @elapsed_time
 def preprocessing_art(input_df):
     """art(train/test)の前処理"""
+    output_df = input_df.copy()
 
-    # とりあえず学習できるカラムだけ取得
-    num_cols = feature_engineering.get_num_col(input_df)
-    cat_cols = ['principal_maker', 'principal_or_first_maker', 'copyright_holder', 'acquisition_method', 'acquisition_credit_line']  # ラベルエンコードするカテゴリカラム
-    output_df = input_df[['object_id'] + num_cols + cat_cols].copy()
+    # テキストカラムの特徴量生成
+    text_cols = [
+        'title',
+        'description',
+        'long_title',
+        'sub_title',
+        'more_title'
+    ]
+    # 文字列の長さ
+    for c in text_cols:
+        output_df[f'{c}_text_len'] = output_df[c].str.len()
+
+    # bert vecを結合
+    # ref: https://colab.research.google.com/drive/1SEpFu6BuKnf-f7WrjBy3PiDCW4uyrB8O?authuser=3#scrollTo=n7RydsVa945l
+    # title_bert_vev = pd.read_pickle(FEATURE_DIR_NAME + 'title_bert_vec.pkl')  # title
+    # output_df = pd.concat([output_df, title_bert_vev], axis=1)
+    # description_bert_vev = pd.read_pickle(FEATURE_DIR_NAME + 'description_bert_vec.pkl')  # description
+    # output_df = pd.concat([output_df, description_bert_vev], axis=1)
+
+    # 学習できるカラムだけ取得
+    num_cols = feature_engineering.get_num_col(output_df)
+    cat_cols = ['title', 'principal_maker', 'principal_or_first_maker', 'copyright_holder', 'acquisition_method', 'acquisition_credit_line']  # ラベルエンコードするカテゴリカラム
+
+    output_df = output_df[['object_id'] + num_cols + cat_cols]
+
+    # カテゴリ変数をエンコード
+    output_df = category_encoder.count_encoder(output_df, cat_cols)
     output_df = category_encoder.sklearn_label_encoder(output_df, cat_cols, drop_col=True)
     return output_df
 
@@ -212,7 +236,7 @@ if __name__ == "__main__":
 
     # loggerの設定
     global logger, run_name, ts
-    logger = util.Logger()
+    logger = Logger()
     logger.info_log('★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆')
 
     # seedの固定
