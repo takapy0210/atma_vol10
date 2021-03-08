@@ -91,6 +91,30 @@ def aggregation(df, target_col, agg_target_col):
     return df
 
 
+def create_day_feature(df, col, prefix, change_utc2asia=False,
+                       attrs=['year', 'quarter', 'month', 'week', 'day', 'dayofweek', 'hour', 'minute']):
+    """日時特徴量の生成処理
+
+    Args:
+        df (pd.DataFrame): 日時特徴量を含むDF
+        col (str)): 日時特徴量のカラム名
+        prefix (str): 新しく生成するカラム名に付与するprefix
+        attrs (list of str): 生成する日付特徴量. Defaults to ['year', 'quarter', 'month', 'week', 'day', 'dayofweek', 'hour', 'minute']
+                            cf. https://qiita.com/Takemura-T/items/79b16313e45576bb6492
+
+    Returns:
+        pd.DataFrame: 日時特徴量を付与したDF
+
+    """
+
+    df.loc[:, col] = pd.to_datetime(df[col])
+    for attr in attrs:
+        dtype = np.float32 if attr == 'year' else np.float16
+        df[prefix + '_' + attr] = getattr(df[col].dt, attr).astype(dtype)
+
+    return df
+
+
 @elapsed_time
 def load_data():
     """データをロードする"""
@@ -168,8 +192,8 @@ def get_cumcount_df(input_df, prefix, col):
         output_df = output_df.merge(temp_df[['object_id', col]], on='object_id', how='left').rename(columns={col:f'{prefix}_{i}'})
 
     # ラベルエンコーディング
-    material_cols = [col for col in output_df.columns if col.startswith(f'{prefix}_')]
-    output_df = category_encoder.sklearn_label_encoder(output_df, material_cols, drop_col=True)
+    cols = [col for col in output_df.columns if col.startswith(f'{prefix}_')]
+    output_df = category_encoder.sklearn_label_encoder(output_df, cols, drop_col=True)
     return output_df
 
 
@@ -186,15 +210,15 @@ def preprocessing_material(input_df):
     # カウントエンコーディング
     count_df = category_encoder.count_encoder(input_df, ['material_name'])
     # object_idごとにどのくらいレアな材料を使っているか
-    rare_material_df = count_df.groupby('object_id')[['material_name_count_enc']].sum().reset_index().rename(columns={'material_name_count_enc': 'material_count_enc_sum'})
+    rare_df = count_df.groupby('object_id')[['material_name_count_enc']].sum().reset_index().rename(columns={'material_name_count_enc': 'material_count_enc_sum'})
 
     # object_idごとにいくつの材料があるか
-    material_sum_df = input_df.groupby('object_id')[['material_name']].count().reset_index().rename(columns={'material_name': 'material_sum_by_object'})
-    output_df = pd.merge(rare_material_df, material_sum_df, how='left', on='object_id')
+    sum_df = input_df.groupby('object_id')[['material_name']].count().reset_index().rename(columns={'material_name': 'material_sum_by_object'})
+    output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
 
     # 素材を横に並べたDFを取得
-    material_cumcount_df = get_cumcount_df(input_df, 'material', 'material_name')
-    output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
+    cumcount_df = get_cumcount_df(input_df, 'material', 'material_name')
+    output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
 
     return output_df
 
@@ -211,15 +235,15 @@ def preprocessing_object(input_df):
     # カウントエンコーディング
     count_df = category_encoder.count_encoder(input_df, ['object_name'])
     # object_idごとにどのくらいレアな材料を使っているか
-    rare_material_df = count_df.groupby('object_id')[['object_name_count_enc']].sum().reset_index().rename(columns={'object_name_count_enc': 'object_count_enc_sum'})
+    rare_df = count_df.groupby('object_id')[['object_name_count_enc']].sum().reset_index().rename(columns={'object_name_count_enc': 'object_count_enc_sum'})
 
     # object_idごとにいくつの材料があるか
-    material_sum_df = input_df.groupby('object_id')[['object_name']].count().reset_index().rename(columns={'object_name': 'object_sum_by_object'})
-    output_df = pd.merge(rare_material_df, material_sum_df, how='left', on='object_id')
+    sum_df = input_df.groupby('object_id')[['object_name']].count().reset_index().rename(columns={'object_name': 'object_sum_by_object'})
+    output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
 
     # 素材を横に並べたDFを取得
-    material_cumcount_df = get_cumcount_df(input_df, 'object_collection', 'object_name')
-    output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
+    cumcount_df = get_cumcount_df(input_df, 'object_collection', 'object_name')
+    output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
 
     return output_df
 
@@ -238,15 +262,15 @@ def preprocessing_person(input_df):
     # カウントエンコーディング
     count_df = category_encoder.count_encoder(input_df, ['person_name'])
     # object_idごとにどのくらいレアな材料を使っているか
-    rare_material_df = count_df.groupby('object_id')[['person_name_count_enc']].sum().reset_index().rename(columns={'person_name_count_enc': 'person_count_enc_sum'})
+    rare_df = count_df.groupby('object_id')[['person_name_count_enc']].sum().reset_index().rename(columns={'person_name_count_enc': 'person_count_enc_sum'})
 
     # object_idごとにいくつの材料があるか
-    material_sum_df = input_df.groupby('object_id')[['person_name']].count().reset_index().rename(columns={'person_name': 'person_sum_by_object'})
-    output_df = pd.merge(rare_material_df, material_sum_df, how='left', on='object_id')
+    sum_df = input_df.groupby('object_id')[['person_name']].count().reset_index().rename(columns={'person_name': 'person_sum_by_object'})
+    output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
 
     # 素材を横に並べたDFを取得
-    material_cumcount_df = get_cumcount_df(input_df, 'person', 'person_name')
-    output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
+    cumcount_df = get_cumcount_df(input_df, 'person', 'person_name')
+    output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
 
     return output_df
 
@@ -271,8 +295,8 @@ def preprocessing_production_place(input_df):
     output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
 
     # 素材を横に並べたDFを取得
-    material_cumcount_df = get_cumcount_df(input_df, 'production_place', 'production_place_name')
-    output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
+    cumcount_df = get_cumcount_df(input_df, 'production_place', 'production_place_name')
+    output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
 
     return output_df
 
@@ -296,8 +320,115 @@ def preprocessing_technique(input_df):
     output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
 
     # 素材を横に並べたDFを取得
-    material_cumcount_df = get_cumcount_df(input_df, 'technique', 'technique_name')
-    output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
+    cumcount_df = get_cumcount_df(input_df, 'technique', 'technique_name')
+    output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
+
+    return output_df
+
+
+@elapsed_time
+def preprocessing_maker(input_df):
+    """makerデータの前処理を行う
+    作家情報が保存されたテーブルです。
+    name が行に対してユニークであり、他のテーブルと紐付ける場合 name を key 列として利用してください。
+
+    col:
+        name: 名前
+        date_of_birth: 誕生日 (or 年)
+        place_of_birth: 生まれた場所
+        date_of_death: 死亡日 (or 年)
+        place_of_death: 死亡した場所
+        nationality: 国籍
+    """
+    # カウントエンコーディング
+    output_df = category_encoder.count_encoder(input_df, ['place_of_birth'])
+    output_df = category_encoder.count_encoder(output_df, ['place_of_death'])
+
+    # ラベルエンコーディング
+    output_df = category_encoder.sklearn_label_encoder(output_df, ['place_of_birth'], drop_col=True)
+    output_df = category_encoder.sklearn_label_encoder(output_df, ['place_of_death'], drop_col=True)
+    output_df = category_encoder.sklearn_label_encoder(output_df, ['nationality'], drop_col=True)
+
+    # 誕生日と死亡日の特徴量
+    for col in ['date_of_birth', 'date_of_death']:
+        # 何も値が入っていない場合は9で埋める
+        output_df[col] = output_df[col].fillna('9999-99-99')
+        output_df[[f'{col}_year', f'{col}_month', f'{col}_day']] = output_df[col].str.split('-', expand=True)
+        # 年だけ入っているみたいなデータは1月1日で補完する
+        output_df[[f'{col}_month', f'{col}_day']] = output_df[[f'{col}_month', f'{col}_day']].fillna('01')
+        output_df = output_df.astype({f'{col}_year': 'int32', f'{col}_month': 'int8', f'{col}_day': 'int8'})
+
+    # 寿命
+    output_df['lifespan'] = output_df['date_of_death_year'] - output_df['date_of_birth_year']
+
+    return output_df
+
+
+@elapsed_time
+def preprocessing_principal_maker(input_df):
+    """principal_makerデータの前処理を行う
+    作品に携わった作家に関するテーブル。作家ごとに作品にどのように関与したかが保存されています。
+    ひとつの作品に対して複数の作家が関わっている場合があるため art_object に対しては複数紐づく可能性があることに注意してください。
+
+    col:
+        id: principal_maker table のレコードに固有のID
+        object_id: 携わった作品. train/test の object_id とひも付きます.
+        qualification: どのような携わり方をしたか (ex. mentioned on object)
+        roles: 役割
+        productionPlaces: 制作場所
+        maker_name: 作家の名前. maker の name とひも付きます.
+    """
+    # カウントエンコーディング
+    count_df = category_encoder.count_encoder(input_df, ['qualification', 'roles', 'productionPlaces', 'maker_name'])
+    # object_idごとにどのくらいレアか
+    rare_df = count_df.groupby('object_id')[['qualification_count_enc', 'roles_count_enc', 'productionPlaces_count_enc', 'maker_name_count_enc']].sum().reset_index()\
+        .rename(columns={'qualification_count_enc': 'qualification_count_enc_sum', 'roles_count_enc': 'roles_count_enc_sum',
+                         'productionPlaces_count_enc': 'productionPlaces_count_enc_sum', 'maker_name_count_enc': 'maker_name_count_enc_sum'})
+
+    # object_idごとにいくつあるか
+    sum_df = input_df.groupby('object_id')[['qualification', 'roles', 'productionPlaces', 'maker_name']].count().reset_index()\
+        .rename(columns={'qualification': 'qualification_by_object', 'roles': 'roles_by_object',
+                         'productionPlaces': 'productionPlaces_by_object', 'maker_name': 'maker_name_by_object'})
+    output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
+
+    # 素材を横に並べたDFを取得
+    cumcount_df = get_cumcount_df(input_df, 'qualification', 'qualification')
+    output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
+    cumcount_df = get_cumcount_df(input_df, 'roles', 'roles')
+    output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
+    cumcount_df = get_cumcount_df(input_df, 'productionPlaces', 'productionPlaces')
+    output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
+    cumcount_df = get_cumcount_df(input_df, 'maker_name', 'maker_name')
+    output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
+
+    return output_df
+
+
+@elapsed_time
+def preprocessing_principal_maker_occupation(input_df):
+    """principal_makerデータの前処理を行う
+    作家が作品に対してどのような作業を行ったかを表しているテーブルです。複数の仮定に関与する場合があるため principal_maker とは 1-m でひも付きます。
+
+    col:
+        id: principal_maker の id 列とひも付きます
+        object_id
+        maker_name
+        maker_occupation_name: 作家の行った作業名
+    """
+    # カウントエンコーディング
+    count_df = category_encoder.count_encoder(input_df, ['maker_occupation_name'])
+    # object_idごとにどのくらいレアか
+    rare_df = count_df.groupby('object_id')[['maker_occupation_name_count_enc']].sum().reset_index()\
+        .rename(columns={'maker_occupation_name_count_enc': 'maker_occupation_name_count_enc_sum'})
+
+    # object_idごとにいくつあるか
+    sum_df = input_df.groupby('object_id')[['maker_occupation_name']].count().reset_index()\
+        .rename(columns={'maker_occupation_name': 'maker_occupation_name_by_object'})
+    output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
+
+    # 素材を横に並べたDFを取得
+    cumcount_df = get_cumcount_df(input_df, 'maker_occupation_name', 'maker_occupation_name')
+    output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
 
     return output_df
 
@@ -317,29 +448,6 @@ def preprocessing_art(input_df):
             size_info[column_name] = size_info.apply(lambda row: row[column_name] * 10 if row['unit'] == 'cm' else row[column_name], axis=1) # 　単位をmmに統一する
             output_df[column_name] = size_info[column_name]
         return output_df
-
-    def create_day_feature(df, col, prefix, change_utc2asia=False,
-                           attrs=['year', 'quarter', 'month', 'week', 'day', 'dayofweek', 'hour', 'minute']):
-        """日時特徴量の生成処理
-
-        Args:
-            df (pd.DataFrame): 日時特徴量を含むDF
-            col (str)): 日時特徴量のカラム名
-            prefix (str): 新しく生成するカラム名に付与するprefix
-            attrs (list of str): 生成する日付特徴量. Defaults to ['year', 'quarter', 'month', 'week', 'day', 'dayofweek', 'hour', 'minute']
-                                cf. https://qiita.com/Takemura-T/items/79b16313e45576bb6492
-
-        Returns:
-            pd.DataFrame: 日時特徴量を付与したDF
-
-        """
-
-        df.loc[:, col] = pd.to_datetime(df[col])
-        for attr in attrs:
-            dtype = np.float32 if attr == 'year' else np.float16
-            df[prefix + '_' + attr] = getattr(df[col].dt, attr).astype(dtype)
-
-        return df
 
     output_df = input_df.copy()
 
@@ -390,12 +498,12 @@ def preprocessing_art(input_df):
 
     # カテゴリ変数をエンコード
     output_df = category_encoder.count_encoder(output_df, cat_cols)
-    output_df = category_encoder.sklearn_label_encoder(output_df, cat_cols, drop_col=True)
+    output_df = category_encoder.sklearn_label_encoder(output_df, cat_cols, drop_col=False)
     return output_df
 
 
 @elapsed_time
-def merge_data(art, color, material, person, object_collection, production_place, technique):
+def merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker):
     """データをマージする"""
     outout_df = pd.merge(art, color, how='left', on='object_id')
     outout_df = pd.merge(outout_df, material, how='left', on='object_id')
@@ -403,6 +511,9 @@ def merge_data(art, color, material, person, object_collection, production_place
     outout_df = pd.merge(outout_df, object_collection, how='left', on='object_id')
     outout_df = pd.merge(outout_df, production_place, how='left', on='object_id')
     outout_df = pd.merge(outout_df, technique, how='left', on='object_id')
+    outout_df = pd.merge(outout_df, maker, how='left', left_on='principal_maker', right_on='name')
+    outout_df = pd.merge(outout_df, principal_maker, how='left', on='object_id')
+    # outout_df = pd.merge(outout_df, principal_maker_occupation, how='left', on='object_id')
     return outout_df
 
 
@@ -464,13 +575,17 @@ def main():
     object_collection = preprocessing_object(dfs['object_collection'].rename(columns={'name': 'object_name'}))
     production_place = preprocessing_production_place(dfs['production_place'].rename(columns={'name': 'production_place_name'}))
     technique = preprocessing_technique(dfs['technique'].rename(columns={'name': 'technique_name'}))
+    maker = preprocessing_maker(dfs['maker'])
+    principal_maker = preprocessing_principal_maker(dfs['principal_maker'])
+    # principal_all = pd.merge(dfs['principal_maker'][['id', 'object_id']], dfs['principal_maker_occupation'], how='left', on='id')
+    # principal_maker_occupation = preprocessing_principal_maker_occupation(principal_all.rename(columns={'name': 'maker_occupation_name'}))
 
     # train / testの前処理
     art = pd.concat([dfs['train'], dfs['test']], axis=0, sort=False).reset_index(drop=True)
     art = preprocessing_art(art)
 
     # データをマージしてtrainとtestを生成する
-    df = merge_data(art, color, material, person, object_collection, production_place, technique)
+    df = merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker)
 
     # マージ後のデータで集約特徴量を生成
     df = agg_features(df)

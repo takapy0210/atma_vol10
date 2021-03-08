@@ -71,10 +71,26 @@ FEATURES:
   - description_text_len
   - lifespan
   - long_title_text_len
-  - maker_name_0_lbl_enc
-  - maker_name_1_lbl_enc
-  - maker_name_by_object
-  - maker_name_count_enc_sum
+  - maker_name_0_lbl_enc_x
+  - maker_name_0_lbl_enc_y
+  - maker_name_1_lbl_enc_x
+  - maker_name_1_lbl_enc_y
+  - maker_name_2_lbl_enc
+  - maker_name_3_lbl_enc
+  - maker_name_4_lbl_enc
+  - maker_name_5_lbl_enc
+  - maker_name_by_object_x
+  - maker_name_by_object_y
+  - maker_name_count_enc_sum_x
+  - maker_name_count_enc_sum_y
+  - maker_occupation_name_0_lbl_enc
+  - maker_occupation_name_1_lbl_enc
+  - maker_occupation_name_2_lbl_enc
+  - maker_occupation_name_3_lbl_enc
+  - maker_occupation_name_4_lbl_enc
+  - maker_occupation_name_5_lbl_enc
+  - maker_occupation_name_by_object
+  - maker_occupation_name_count_enc_sum
   - material_0_lbl_enc
   - material_1_lbl_enc
   - material_2_lbl_enc
