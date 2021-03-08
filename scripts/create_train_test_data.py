@@ -251,6 +251,32 @@ def preprocessing_person(input_df):
 
 
 @elapsed_time
+def preprocessing_production_place(input_df):
+    """production_placeデータの前処理を行う
+    作品が描かれた場所です。複数にまたがる場合や、不明な場合があります。
+    不明な場合, name の prefix として "?" が付与されます。
+
+    col:
+        object_id
+        production_place_name: 場所の名前
+    """
+    # カウントエンコーディング
+    count_df = category_encoder.count_encoder(input_df, ['production_place_name'])
+    # object_idごとにどのくらいレアか
+    rare_df = count_df.groupby('object_id')[['production_place_name_count_enc']].sum().reset_index().rename(columns={'production_place_name_count_enc': 'production_place_count_enc_sum'})
+
+    # object_idごとにいくつあるか
+    sum_df = input_df.groupby('object_id')[['production_place_name']].count().reset_index().rename(columns={'production_place_name': 'production_place_sum_by_object'})
+    output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
+
+    # 素材を横に並べたDFを取得
+    material_cumcount_df = get_cumcount_df(input_df, 'production_place', 'production_place_name')
+    output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
+
+    return output_df
+
+
+@elapsed_time
 def preprocessing_art(input_df):
     """art(train/test)の前処理"""
 
@@ -343,12 +369,13 @@ def preprocessing_art(input_df):
 
 
 @elapsed_time
-def merge_data(art, color, material, person, object_collection):
+def merge_data(art, color, material, person, object_collection, production_place):
     """データをマージする"""
     outout_df = pd.merge(art, color, how='left', on='object_id')
     outout_df = pd.merge(outout_df, material, how='left', on='object_id')
     outout_df = pd.merge(outout_df, person, how='left', on='object_id')
     outout_df = pd.merge(outout_df, object_collection, how='left', on='object_id')
+    outout_df = pd.merge(outout_df, production_place, how='left', on='object_id')
     return outout_df
 
 
@@ -408,13 +435,14 @@ def main():
     material = preprocessing_material(dfs['material'].rename(columns={'name': 'material_name'}))
     person = preprocessing_person(dfs['historical_person'].rename(columns={'name': 'person_name'}))
     object_collection = preprocessing_object(dfs['object_collection'].rename(columns={'name': 'object_name'}))
+    production_place = preprocessing_production_place(dfs['production_place'].rename(columns={'name': 'production_place_name'}))
 
     # train / testの前処理
     art = pd.concat([dfs['train'], dfs['test']], axis=0, sort=False).reset_index(drop=True)
     art = preprocessing_art(art)
 
     # データをマージしてtrainとtestを生成する
-    df = merge_data(art, color, material, person, object_collection)
+    df = merge_data(art, color, material, person, object_collection, production_place)
 
     # マージ後のデータで集約特徴量を生成
     df = agg_features(df)
