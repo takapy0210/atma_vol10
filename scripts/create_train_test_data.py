@@ -228,7 +228,8 @@ def preprocessing_object(input_df):
 def preprocessing_person(input_df):
     """personデータの前処理を行う
     作品に描かれたり、写ったりしている人物のテーブルです。
-    たとえばレンブラント・ファン・レインの「夜警」では実際に存在した市長 https://en.wikipedia.org/wiki/Frans_Banninck_Cocq などが描かれており、それらの情報が保存されています。
+    たとえばレンブラント・ファン・レインの「夜警」では実際に存在した市長 https://en.wikipedia.org/wiki/Frans_Banninck_Cocq などが描かれており、
+    それらの情報が保存されています。
 
     col:
         object_id
@@ -271,6 +272,31 @@ def preprocessing_production_place(input_df):
 
     # 素材を横に並べたDFを取得
     material_cumcount_df = get_cumcount_df(input_df, 'production_place', 'production_place_name')
+    output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
+
+    return output_df
+
+
+@elapsed_time
+def preprocessing_technique(input_df):
+    """techniqueデータの前処理を行う
+    どのような技法で描かれたかが保存されたテーブルです。
+
+    col:
+        object_id
+        technique_name: 技法の名前
+    """
+    # カウントエンコーディング
+    count_df = category_encoder.count_encoder(input_df, ['technique_name'])
+    # object_idごとにどのくらいレアか
+    rare_df = count_df.groupby('object_id')[['technique_name_count_enc']].sum().reset_index().rename(columns={'technique_name_count_enc': 'technique_count_enc_sum'})
+
+    # object_idごとにいくつあるか
+    sum_df = input_df.groupby('object_id')[['technique_name']].count().reset_index().rename(columns={'technique_name': 'technique_sum_by_object'})
+    output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
+
+    # 素材を横に並べたDFを取得
+    material_cumcount_df = get_cumcount_df(input_df, 'technique', 'technique_name')
     output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
 
     return output_df
@@ -369,13 +395,14 @@ def preprocessing_art(input_df):
 
 
 @elapsed_time
-def merge_data(art, color, material, person, object_collection, production_place):
+def merge_data(art, color, material, person, object_collection, production_place, technique):
     """データをマージする"""
     outout_df = pd.merge(art, color, how='left', on='object_id')
     outout_df = pd.merge(outout_df, material, how='left', on='object_id')
     outout_df = pd.merge(outout_df, person, how='left', on='object_id')
     outout_df = pd.merge(outout_df, object_collection, how='left', on='object_id')
     outout_df = pd.merge(outout_df, production_place, how='left', on='object_id')
+    outout_df = pd.merge(outout_df, technique, how='left', on='object_id')
     return outout_df
 
 
@@ -436,13 +463,14 @@ def main():
     person = preprocessing_person(dfs['historical_person'].rename(columns={'name': 'person_name'}))
     object_collection = preprocessing_object(dfs['object_collection'].rename(columns={'name': 'object_name'}))
     production_place = preprocessing_production_place(dfs['production_place'].rename(columns={'name': 'production_place_name'}))
+    technique = preprocessing_technique(dfs['technique'].rename(columns={'name': 'technique_name'}))
 
     # train / testの前処理
     art = pd.concat([dfs['train'], dfs['test']], axis=0, sort=False).reset_index(drop=True)
     art = preprocessing_art(art)
 
     # データをマージしてtrainとtestを生成する
-    df = merge_data(art, color, material, person, object_collection, production_place)
+    df = merge_data(art, color, material, person, object_collection, production_place, technique)
 
     # マージ後のデータで集約特徴量を生成
     df = agg_features(df)
