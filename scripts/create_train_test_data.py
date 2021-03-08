@@ -200,6 +200,31 @@ def preprocessing_material(input_df):
 
 
 @elapsed_time
+def preprocessing_object(input_df):
+    """object_collectionデータの前処理を行う
+    作品がどのような形式であるか。
+
+    col:
+        object_id
+        object_name: 形式名
+    """
+    # カウントエンコーディング
+    count_df = category_encoder.count_encoder(input_df, ['object_name'])
+    # object_idごとにどのくらいレアな材料を使っているか
+    rare_material_df = count_df.groupby('object_id')[['object_name_count_enc']].sum().reset_index().rename(columns={'object_name_count_enc': 'object_count_enc_sum'})
+
+    # object_idごとにいくつの材料があるか
+    material_sum_df = input_df.groupby('object_id')[['object_name']].count().reset_index().rename(columns={'object_name': 'object_sum_by_object'})
+    output_df = pd.merge(rare_material_df, material_sum_df, how='left', on='object_id')
+
+    # 素材を横に並べたDFを取得
+    material_cumcount_df = get_cumcount_df(input_df, 'object_collection', 'object_name')
+    output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
+
+    return output_df
+
+
+@elapsed_time
 def preprocessing_person(input_df):
     """personデータの前処理を行う
     作品に描かれたり、写ったりしている人物のテーブルです。
@@ -318,11 +343,12 @@ def preprocessing_art(input_df):
 
 
 @elapsed_time
-def merge_data(art, color, material, person):
+def merge_data(art, color, material, person, object_collection):
     """データをマージする"""
     outout_df = pd.merge(art, color, how='left', on='object_id')
     outout_df = pd.merge(outout_df, material, how='left', on='object_id')
     outout_df = pd.merge(outout_df, person, how='left', on='object_id')
+    outout_df = pd.merge(outout_df, object_collection, how='left', on='object_id')
     return outout_df
 
 
@@ -381,13 +407,14 @@ def main():
     color = preprocessing_color(dfs['color'])
     material = preprocessing_material(dfs['material'].rename(columns={'name': 'material_name'}))
     person = preprocessing_person(dfs['historical_person'].rename(columns={'name': 'person_name'}))
+    object_collection = preprocessing_object(dfs['object_collection'].rename(columns={'name': 'object_name'}))
 
     # train / testの前処理
     art = pd.concat([dfs['train'], dfs['test']], axis=0, sort=False).reset_index(drop=True)
     art = preprocessing_art(art)
 
     # データをマージしてtrainとtestを生成する
-    df = merge_data(art, color, material, person)
+    df = merge_data(art, color, material, person, object_collection)
 
     # マージ後のデータで集約特徴量を生成
     df = agg_features(df)
