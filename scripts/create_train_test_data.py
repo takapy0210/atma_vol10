@@ -58,6 +58,39 @@ def seed_everything(seed=42):
     os.environ['TF_DETERMINISTIC_OPS'] = '1'
 
 
+def aggregation(df, target_col, agg_target_col):
+    """集計特徴量の生成処理
+
+    Args:
+        df (pd.DataFrame): 対象のDF
+        target_col (list of str): 集計元カラム（多くの場合カテゴリ変数のカラム名リスト）
+        agg_target_col (str): 集計対象のカラム（多くの場合連続変数）
+
+    Returns:
+        pd.DataFrame: データフレーム
+    """
+
+    # カラム名を定義
+    target_col_name = ''
+    for col in target_col:
+        target_col_name += str(col)
+        target_col_name += '_'
+
+    gr = df.groupby(target_col)[agg_target_col]
+    df[f'{target_col_name}{agg_target_col}_mean'] = gr.transform('mean').astype('float16')
+    df[f'{target_col_name}{agg_target_col}_max'] = gr.transform('max').astype('float16')
+    df[f'{target_col_name}{agg_target_col}_min'] = gr.transform('min').astype('float16')
+    df[f'{target_col_name}{agg_target_col}_std'] = gr.transform('std').astype('float16')
+    df[f'{target_col_name}{agg_target_col}_median'] = gr.transform('median').astype('float16')
+
+    # 自身の値との差分
+    df[f'{target_col_name}{agg_target_col}_mean_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_mean']
+    df[f'{target_col_name}{agg_target_col}_max_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_max']
+    df[f'{target_col_name}{agg_target_col}_min_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_min']
+
+    return df
+
+
 @elapsed_time
 def load_data():
     """データをロードする"""
@@ -161,6 +194,7 @@ def preprocessing_art(input_df):
     """art(train/test)の前処理"""
 
     def get_size_from_subtitle(input_df):
+        """subtitleからサイズを抽出"""
         output_df = input_df.copy()
         for axis in ['h', 'w', 't', 'd']:
             column_name = f'size_{axis}'
@@ -171,10 +205,49 @@ def preprocessing_art(input_df):
             output_df[column_name] = size_info[column_name]
         return output_df
 
+    def create_day_feature(df, col, prefix, change_utc2asia=False,
+                           attrs=['year', 'quarter', 'month', 'week', 'day', 'dayofweek', 'hour', 'minute']):
+        """日時特徴量の生成処理
+
+        Args:
+            df (pd.DataFrame): 日時特徴量を含むDF
+            col (str)): 日時特徴量のカラム名
+            prefix (str): 新しく生成するカラム名に付与するprefix
+            attrs (list of str): 生成する日付特徴量. Defaults to ['year', 'quarter', 'month', 'week', 'day', 'dayofweek', 'hour', 'minute']
+                                cf. https://qiita.com/Takemura-T/items/79b16313e45576bb6492
+
+        Returns:
+            pd.DataFrame: 日時特徴量を付与したDF
+
+        """
+
+        df.loc[:, col] = pd.to_datetime(df[col])
+        for attr in attrs:
+            dtype = np.float32 if attr == 'year' else np.float16
+            df[prefix + '_' + attr] = getattr(df[col].dt, attr).astype(dtype)
+
+        return df
+
     output_df = input_df.copy()
 
     # subtitleからサイズの情報を取得する
     output_df = get_size_from_subtitle(input_df)
+
+    # 日付特徴量
+    # 製作期間
+    output_df['production_period'] = output_df['dating_year_late'] - output_df['dating_year_early']
+    # acquisition_date(収集日)から日付特徴量を取得
+    output_df = create_day_feature(output_df, col='acquisition_date', prefix='acquisition', attrs=['year', 'month', 'day', 'dayofweek'])
+    # 製作期間が終わってから収集されるまでの期間
+    output_df['acquisition_period'] = output_df['acquisition_year'] - output_df['dating_year_late']
+    # dating_sorting_dateをbin分割する
+    output_df['dating_sorting_date'] = output_df['dating_sorting_date'].fillna(output_df['dating_sorting_date'].mean())  # とりあえず平均で埋める
+    century = pd.cut(
+        output_df['dating_sorting_date'],
+        [-float('inf'), 1499, 1549, 1599, 1649, 1699, 1749, 1799, 1849, 1899, float('inf')],
+        labels=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    )
+    output_df['century'] = century.values.astype(np.int8)
 
     # テキストカラムの特徴量生成
     text_cols = [
@@ -197,7 +270,8 @@ def preprocessing_art(input_df):
 
     # 学習できるカラムだけ取得
     num_cols = feature_engineering.get_num_col(output_df)
-    cat_cols = ['title', 'principal_maker', 'principal_or_first_maker', 'copyright_holder', 'acquisition_method', 'acquisition_credit_line']  # ラベルエンコードするカテゴリカラム
+    cat_cols = ['title', 'principal_maker', 'principal_or_first_maker', 'copyright_holder',
+                'acquisition_method', 'acquisition_credit_line']  # ラベルエンコードするカテゴリカラム
 
     output_df = output_df[['object_id'] + num_cols + cat_cols]
 
@@ -213,6 +287,20 @@ def merge_data(art, color, material):
     outout_df = pd.merge(art, color, how='left', on='object_id')
     outout_df = pd.merge(outout_df, material, how='left', on='object_id')
     return outout_df
+
+
+@elapsed_time
+def agg_features(input_df):
+    """集計特徴量を生成する"""
+
+    output_df = feature_engineering.aggregation(input_df, ['century'], 'description_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['century'], 'long_title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['century'], 'more_title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['century'], 'sub_title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['century'], 'title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['century'], 'material_count_enc_sum')
+
+    return output_df
 
 
 @elapsed_time
@@ -262,6 +350,10 @@ def main():
 
     # データをマージしてtrainとtestを生成する
     df = merge_data(art, color, material)
+
+    # マージ後のデータで集約特徴量を生成
+    # TODO:
+    df = agg_features(df)
 
     # データの保存
     save_data(df, len(dfs['train']))
