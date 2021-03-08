@@ -200,7 +200,7 @@ def main(model_type='lgb') -> str:
     try:
         # インスタンス生成
         runner = Runner(run_name, model_cls, features, setting, model_params, cv, category_col,
-                        is_add_pseudo=True, pseudo_label_file='pseudo_lb_1p0269.pkl')
+                        is_add_pseudo=False, pseudo_label_file='pseudo_lb_1p0269.pkl')
         use_feature_name = runner.get_feature_name()  # 今回の学習で使用する特徴量名を取得
 
         # モデルのconfigをjsonで保存

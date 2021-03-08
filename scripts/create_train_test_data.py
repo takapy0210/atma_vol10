@@ -1,6 +1,6 @@
 """特徴量生成スクリプト
     実行コマンド
-        docker exec -it 26df224b1ba4 /bin/bash -c "cd ./atmaCup_vol10/scripts && python3 create_train_test_data.py"
+        docker exec -it 962f598235e9 /bin/bash -c "cd ./atmaCup_vol10/scripts && python3 create_train_test_data.py"
 
 """
 
@@ -122,6 +122,24 @@ def preprocessing_material(input_df):
         object_id
         name: 材料名
     """
+
+    def get_material_cumcount_df(input_df, prefix):
+        """input_dfに存在するカテゴリ変数を横に展開する
+        """
+        _df = input_df.copy()
+        max_size = _df.groupby('object_id').size().max()
+        _df['cumcount'] = _df.groupby('object_id').cumcount()
+        output_df = pd.DataFrame({'object_id': _df['object_id'].unique()})
+
+        for i in range(max_size):
+            temp_df = _df[_df['cumcount']==i].reset_index(drop=True)
+            output_df = output_df.merge(temp_df[['object_id', 'material_name']], on='object_id', how='left').rename(columns={'material_name':f'{prefix}_{i}'})
+
+        # ラベルエンコーディング
+        material_cols = [col for col in output_df.columns if col.startswith('material_')]
+        output_df = category_encoder.sklearn_label_encoder(output_df, material_cols, drop_col=True)
+        return output_df
+
     # カウントエンコーディング
     count_df = category_encoder.count_encoder(input_df, ['material_name'])
     # object_idごとにどのくらいレアな材料を使っているか
@@ -131,13 +149,32 @@ def preprocessing_material(input_df):
     material_sum_df = input_df.groupby('object_id')[['material_name']].count().reset_index().rename(columns={'material_name': 'material_sum_by_object'})
     output_df = pd.merge(rare_material_df, material_sum_df, how='left', on='object_id')
 
+    # 素材を横に並べたDFを取得
+    material_cumcount_df = get_material_cumcount_df(input_df, 'material')
+    output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
+
     return output_df
 
 
 @elapsed_time
 def preprocessing_art(input_df):
     """art(train/test)の前処理"""
+
+    def get_size_from_subtitle(input_df):
+        output_df = input_df.copy()
+        for axis in ['h', 'w', 't', 'd']:
+            column_name = f'size_{axis}'
+            size_info = output_df['sub_title'].str.extract(r'{} (\d*|\d*\.\d*)(cm|mm)'.format(axis))  # 正規表現を使ってサイズを抽出
+            size_info = size_info.rename(columns={0: column_name, 1: 'unit'})
+            size_info[column_name] = size_info[column_name].replace('', np.nan).astype(float)  # dtypeがobjectになってるのでfloatに直す
+            size_info[column_name] = size_info.apply(lambda row: row[column_name] * 10 if row['unit'] == 'cm' else row[column_name], axis=1) # 　単位をmmに統一する
+            output_df[column_name] = size_info[column_name]
+        return output_df
+
     output_df = input_df.copy()
+
+    # subtitleからサイズの情報を取得する
+    output_df = get_size_from_subtitle(input_df)
 
     # テキストカラムの特徴量生成
     text_cols = [
