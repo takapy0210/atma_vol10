@@ -146,6 +146,33 @@ def preprocessing_color(input_df):
     return output_df
 
 
+def get_cumcount_df(input_df, prefix, col):
+    """input_dfに存在するカテゴリ変数を横に展開する
+
+    Args:
+        input_df (pd.DataFrame): 入力DF
+        prefix (str): 出力カラムのprefix
+        col (str): 横に展開するカラム
+
+    Returns:
+        pd.DataFrame: アウトプットDF
+
+    """
+    _df = input_df.copy()
+    max_size = _df.groupby('object_id').size().max()
+    _df['cumcount'] = _df.groupby('object_id').cumcount()
+    output_df = pd.DataFrame({'object_id': _df['object_id'].unique()})
+
+    for i in range(max_size):
+        temp_df = _df[_df['cumcount']==i].reset_index(drop=True)
+        output_df = output_df.merge(temp_df[['object_id', col]], on='object_id', how='left').rename(columns={col:f'{prefix}_{i}'})
+
+    # ラベルエンコーディング
+    material_cols = [col for col in output_df.columns if col.startswith(f'{prefix}_')]
+    output_df = category_encoder.sklearn_label_encoder(output_df, material_cols, drop_col=True)
+    return output_df
+
+
 @elapsed_time
 def preprocessing_material(input_df):
     """materialデータの前処理を行う
@@ -153,25 +180,8 @@ def preprocessing_material(input_df):
 
     col:
         object_id
-        name: 材料名
+        material_name: 材料名
     """
-
-    def get_material_cumcount_df(input_df, prefix):
-        """input_dfに存在するカテゴリ変数を横に展開する
-        """
-        _df = input_df.copy()
-        max_size = _df.groupby('object_id').size().max()
-        _df['cumcount'] = _df.groupby('object_id').cumcount()
-        output_df = pd.DataFrame({'object_id': _df['object_id'].unique()})
-
-        for i in range(max_size):
-            temp_df = _df[_df['cumcount']==i].reset_index(drop=True)
-            output_df = output_df.merge(temp_df[['object_id', 'material_name']], on='object_id', how='left').rename(columns={'material_name':f'{prefix}_{i}'})
-
-        # ラベルエンコーディング
-        material_cols = [col for col in output_df.columns if col.startswith('material_')]
-        output_df = category_encoder.sklearn_label_encoder(output_df, material_cols, drop_col=True)
-        return output_df
 
     # カウントエンコーディング
     count_df = category_encoder.count_encoder(input_df, ['material_name'])
@@ -183,7 +193,33 @@ def preprocessing_material(input_df):
     output_df = pd.merge(rare_material_df, material_sum_df, how='left', on='object_id')
 
     # 素材を横に並べたDFを取得
-    material_cumcount_df = get_material_cumcount_df(input_df, 'material')
+    material_cumcount_df = get_cumcount_df(input_df, 'material', 'material_name')
+    output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
+
+    return output_df
+
+
+@elapsed_time
+def preprocessing_person(input_df):
+    """personデータの前処理を行う
+    作品に描かれたり、写ったりしている人物のテーブルです。
+    たとえばレンブラント・ファン・レインの「夜警」では実際に存在した市長 https://en.wikipedia.org/wiki/Frans_Banninck_Cocq などが描かれており、それらの情報が保存されています。
+
+    col:
+        object_id
+        person_name: 人物の名前
+    """
+    # カウントエンコーディング
+    count_df = category_encoder.count_encoder(input_df, ['person_name'])
+    # object_idごとにどのくらいレアな材料を使っているか
+    rare_material_df = count_df.groupby('object_id')[['person_name_count_enc']].sum().reset_index().rename(columns={'person_name_count_enc': 'person_count_enc_sum'})
+
+    # object_idごとにいくつの材料があるか
+    material_sum_df = input_df.groupby('object_id')[['person_name']].count().reset_index().rename(columns={'person_name': 'person_sum_by_object'})
+    output_df = pd.merge(rare_material_df, material_sum_df, how='left', on='object_id')
+
+    # 素材を横に並べたDFを取得
+    material_cumcount_df = get_cumcount_df(input_df, 'person', 'person_name')
     output_df = pd.merge(output_df, material_cumcount_df, how='left', on='object_id')
 
     return output_df
@@ -282,10 +318,11 @@ def preprocessing_art(input_df):
 
 
 @elapsed_time
-def merge_data(art, color, material):
+def merge_data(art, color, material, person):
     """データをマージする"""
     outout_df = pd.merge(art, color, how='left', on='object_id')
     outout_df = pd.merge(outout_df, material, how='left', on='object_id')
+    outout_df = pd.merge(outout_df, person, how='left', on='object_id')
     return outout_df
 
 
@@ -343,16 +380,16 @@ def main():
     # id毎にデータを集約する
     color = preprocessing_color(dfs['color'])
     material = preprocessing_material(dfs['material'].rename(columns={'name': 'material_name'}))
+    person = preprocessing_person(dfs['historical_person'].rename(columns={'name': 'person_name'}))
 
     # train / testの前処理
     art = pd.concat([dfs['train'], dfs['test']], axis=0, sort=False).reset_index(drop=True)
     art = preprocessing_art(art)
 
     # データをマージしてtrainとtestを生成する
-    df = merge_data(art, color, material)
+    df = merge_data(art, color, material, person)
 
     # マージ後のデータで集約特徴量を生成
-    # TODO:
     df = agg_features(df)
 
     # データの保存
