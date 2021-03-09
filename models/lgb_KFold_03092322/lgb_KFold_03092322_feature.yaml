@@ -107,50 +107,6 @@ FEATURES:
   - place_of_death_lbl_enc
   - principal_maker_count_enc
   - principal_maker_lbl_enc
-  - principal_maker_lbl_enc_description_text_len_max
-  - principal_maker_lbl_enc_description_text_len_mean
-  - principal_maker_lbl_enc_description_text_len_median
-  - principal_maker_lbl_enc_description_text_len_min
-  - principal_maker_lbl_enc_description_text_len_std
-  - principal_maker_lbl_enc_long_title_text_len_max
-  - principal_maker_lbl_enc_long_title_text_len_mean
-  - principal_maker_lbl_enc_long_title_text_len_median
-  - principal_maker_lbl_enc_long_title_text_len_min
-  - principal_maker_lbl_enc_long_title_text_len_std
-  - principal_maker_lbl_enc_material_count_enc_sum_max
-  - principal_maker_lbl_enc_material_count_enc_sum_max_diff
-  - principal_maker_lbl_enc_material_count_enc_sum_max_minus_q50
-  - principal_maker_lbl_enc_material_count_enc_sum_max_minus_q75
-  - principal_maker_lbl_enc_material_count_enc_sum_max_minus_q90
-  - principal_maker_lbl_enc_material_count_enc_sum_mean
-  - principal_maker_lbl_enc_material_count_enc_sum_mean_diff
-  - principal_maker_lbl_enc_material_count_enc_sum_mean_minus_q50
-  - principal_maker_lbl_enc_material_count_enc_sum_mean_minus_q75
-  - principal_maker_lbl_enc_material_count_enc_sum_mean_minus_q90
-  - principal_maker_lbl_enc_material_count_enc_sum_median
-  - principal_maker_lbl_enc_material_count_enc_sum_min
-  - principal_maker_lbl_enc_material_count_enc_sum_min_diff
-  - principal_maker_lbl_enc_material_count_enc_sum_q10
-  - principal_maker_lbl_enc_material_count_enc_sum_q25
-  - principal_maker_lbl_enc_material_count_enc_sum_q50
-  - principal_maker_lbl_enc_material_count_enc_sum_q75
-  - principal_maker_lbl_enc_material_count_enc_sum_q90
-  - principal_maker_lbl_enc_material_count_enc_sum_std
-  - principal_maker_lbl_enc_more_title_text_len_max
-  - principal_maker_lbl_enc_more_title_text_len_mean
-  - principal_maker_lbl_enc_more_title_text_len_median
-  - principal_maker_lbl_enc_more_title_text_len_min
-  - principal_maker_lbl_enc_more_title_text_len_std
-  - principal_maker_lbl_enc_sub_title_text_len_max
-  - principal_maker_lbl_enc_sub_title_text_len_mean
-  - principal_maker_lbl_enc_sub_title_text_len_median
-  - principal_maker_lbl_enc_sub_title_text_len_min
-  - principal_maker_lbl_enc_sub_title_text_len_std
-  - principal_maker_lbl_enc_title_text_len_max
-  - principal_maker_lbl_enc_title_text_len_mean
-  - principal_maker_lbl_enc_title_text_len_median
-  - principal_maker_lbl_enc_title_text_len_min
-  - principal_maker_lbl_enc_title_text_len_std
   - principal_or_first_maker_count_enc
   - principal_or_first_maker_lbl_enc
   - productionPlaces_0_lbl_enc
@@ -198,9 +154,23 @@ FEATURES:
   - title_lang_ft_lbl_enc_long_title_text_len_min
   - title_lang_ft_lbl_enc_long_title_text_len_std
   - title_lang_ft_lbl_enc_material_count_enc_sum_max
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_diff
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_minus_q50
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_minus_q75
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_minus_q90
   - title_lang_ft_lbl_enc_material_count_enc_sum_mean
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_diff
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_minus_q50
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_minus_q75
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_minus_q90
   - title_lang_ft_lbl_enc_material_count_enc_sum_median
   - title_lang_ft_lbl_enc_material_count_enc_sum_min
+  - title_lang_ft_lbl_enc_material_count_enc_sum_min_diff
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q10
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q25
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q50
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q75
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q90
   - title_lang_ft_lbl_enc_material_count_enc_sum_std
   - title_lang_ft_lbl_enc_more_title_text_len_max
   - title_lang_ft_lbl_enc_more_title_text_len_mean
@@ -219,4 +189,3 @@ FEATURES:
   - title_lang_ft_lbl_enc_title_text_len_std
   - title_lbl_enc
   - title_text_len
-

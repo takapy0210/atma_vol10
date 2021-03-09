@@ -107,50 +107,6 @@ FEATURES:
   - place_of_death_lbl_enc
   - principal_maker_count_enc
   - principal_maker_lbl_enc
-  - principal_maker_lbl_enc_description_text_len_max
-  - principal_maker_lbl_enc_description_text_len_mean
-  - principal_maker_lbl_enc_description_text_len_median
-  - principal_maker_lbl_enc_description_text_len_min
-  - principal_maker_lbl_enc_description_text_len_std
-  - principal_maker_lbl_enc_long_title_text_len_max
-  - principal_maker_lbl_enc_long_title_text_len_mean
-  - principal_maker_lbl_enc_long_title_text_len_median
-  - principal_maker_lbl_enc_long_title_text_len_min
-  - principal_maker_lbl_enc_long_title_text_len_std
-  - principal_maker_lbl_enc_material_count_enc_sum_max
-  - principal_maker_lbl_enc_material_count_enc_sum_max_diff
-  - principal_maker_lbl_enc_material_count_enc_sum_max_minus_q50
-  - principal_maker_lbl_enc_material_count_enc_sum_max_minus_q75
-  - principal_maker_lbl_enc_material_count_enc_sum_max_minus_q90
-  - principal_maker_lbl_enc_material_count_enc_sum_mean
-  - principal_maker_lbl_enc_material_count_enc_sum_mean_diff
-  - principal_maker_lbl_enc_material_count_enc_sum_mean_minus_q50
-  - principal_maker_lbl_enc_material_count_enc_sum_mean_minus_q75
-  - principal_maker_lbl_enc_material_count_enc_sum_mean_minus_q90
-  - principal_maker_lbl_enc_material_count_enc_sum_median
-  - principal_maker_lbl_enc_material_count_enc_sum_min
-  - principal_maker_lbl_enc_material_count_enc_sum_min_diff
-  - principal_maker_lbl_enc_material_count_enc_sum_q10
-  - principal_maker_lbl_enc_material_count_enc_sum_q25
-  - principal_maker_lbl_enc_material_count_enc_sum_q50
-  - principal_maker_lbl_enc_material_count_enc_sum_q75
-  - principal_maker_lbl_enc_material_count_enc_sum_q90
-  - principal_maker_lbl_enc_material_count_enc_sum_std
-  - principal_maker_lbl_enc_more_title_text_len_max
-  - principal_maker_lbl_enc_more_title_text_len_mean
-  - principal_maker_lbl_enc_more_title_text_len_median
-  - principal_maker_lbl_enc_more_title_text_len_min
-  - principal_maker_lbl_enc_more_title_text_len_std
-  - principal_maker_lbl_enc_sub_title_text_len_max
-  - principal_maker_lbl_enc_sub_title_text_len_mean
-  - principal_maker_lbl_enc_sub_title_text_len_median
-  - principal_maker_lbl_enc_sub_title_text_len_min
-  - principal_maker_lbl_enc_sub_title_text_len_std
-  - principal_maker_lbl_enc_title_text_len_max
-  - principal_maker_lbl_enc_title_text_len_mean
-  - principal_maker_lbl_enc_title_text_len_median
-  - principal_maker_lbl_enc_title_text_len_min
-  - principal_maker_lbl_enc_title_text_len_std
   - principal_or_first_maker_count_enc
   - principal_or_first_maker_lbl_enc
   - productionPlaces_0_lbl_enc
@@ -184,6 +140,56 @@ FEATURES:
   - technique_3_lbl_enc
   - technique_count_enc_sum
   - technique_sum_by_object
+  - text_swem_avg_d_0
+  - text_swem_avg_d_1
+  - text_swem_avg_d_10
+  - text_swem_avg_d_11
+  - text_swem_avg_d_12
+  - text_swem_avg_d_13
+  - text_swem_avg_d_14
+  - text_swem_avg_d_15
+  - text_swem_avg_d_16
+  - text_swem_avg_d_17
+  - text_swem_avg_d_18
+  - text_swem_avg_d_19
+  - text_swem_avg_d_2
+  - text_swem_avg_d_20
+  - text_swem_avg_d_21
+  - text_swem_avg_d_22
+  - text_swem_avg_d_23
+  - text_swem_avg_d_24
+  - text_swem_avg_d_25
+  - text_swem_avg_d_26
+  - text_swem_avg_d_27
+  - text_swem_avg_d_28
+  - text_swem_avg_d_29
+  - text_swem_avg_d_3
+  - text_swem_avg_d_30
+  - text_swem_avg_d_31
+  - text_swem_avg_d_32
+  - text_swem_avg_d_33
+  - text_swem_avg_d_34
+  - text_swem_avg_d_35
+  - text_swem_avg_d_36
+  - text_swem_avg_d_37
+  - text_swem_avg_d_38
+  - text_swem_avg_d_39
+  - text_swem_avg_d_4
+  - text_swem_avg_d_40
+  - text_swem_avg_d_41
+  - text_swem_avg_d_42
+  - text_swem_avg_d_43
+  - text_swem_avg_d_44
+  - text_swem_avg_d_45
+  - text_swem_avg_d_46
+  - text_swem_avg_d_47
+  - text_swem_avg_d_48
+  - text_swem_avg_d_49
+  - text_swem_avg_d_5
+  - text_swem_avg_d_6
+  - text_swem_avg_d_7
+  - text_swem_avg_d_8
+  - text_swem_avg_d_9
   - title_count_enc
   - title_lang_ft_count_enc
   - title_lang_ft_lbl_enc
@@ -198,9 +204,23 @@ FEATURES:
   - title_lang_ft_lbl_enc_long_title_text_len_min
   - title_lang_ft_lbl_enc_long_title_text_len_std
   - title_lang_ft_lbl_enc_material_count_enc_sum_max
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_diff
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_minus_q50
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_minus_q75
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_minus_q90
   - title_lang_ft_lbl_enc_material_count_enc_sum_mean
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_diff
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_minus_q50
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_minus_q75
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_minus_q90
   - title_lang_ft_lbl_enc_material_count_enc_sum_median
   - title_lang_ft_lbl_enc_material_count_enc_sum_min
+  - title_lang_ft_lbl_enc_material_count_enc_sum_min_diff
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q10
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q25
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q50
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q75
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q90
   - title_lang_ft_lbl_enc_material_count_enc_sum_std
   - title_lang_ft_lbl_enc_more_title_text_len_max
   - title_lang_ft_lbl_enc_more_title_text_len_mean

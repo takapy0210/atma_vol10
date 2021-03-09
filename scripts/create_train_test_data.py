@@ -520,6 +520,7 @@ def merge_data(art, color, material, person, object_collection, production_place
     outout_df = pd.merge(outout_df, maker, how='left', left_on='principal_maker', right_on='name')
     outout_df = pd.merge(outout_df, principal_maker, how='left', on='object_id')
     # outout_df = pd.merge(outout_df, principal_maker_occupation, how='left', on='object_id')
+    # outout_df = pd.merge(outout_df, text_hier, how='left', on='object_id')
     return outout_df
 
 
@@ -540,6 +541,20 @@ def agg_features(input_df):
     output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'sub_title_text_len')
     output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'title_text_len')
     output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'material_count_enc_sum')
+
+    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'description_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'long_title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'more_title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'sub_title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'material_count_enc_sum')
+
+    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'description_text_len')
+    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'long_title_text_len')
+    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'more_title_text_len')
+    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'sub_title_text_len')
+    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'title_text_len')
+    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'material_count_enc_sum')
 
     return output_df
 
@@ -596,6 +611,9 @@ def main():
     # train / testの前処理
     art = pd.concat([dfs['train'], dfs['test']], axis=0, sort=False).reset_index(drop=True)
     art = preprocessing_art(art)
+
+    # テキストカラムから取得したword2vec特徴量
+    # text_hier = pd.read_pickle(FEATURE_DIR_NAME + 'swem_hier_df.pkl')
 
     # データをマージしてtrainとtestを生成する
     df = merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker)
