@@ -118,9 +118,23 @@ FEATURES:
   - principal_maker_lbl_enc_long_title_text_len_min
   - principal_maker_lbl_enc_long_title_text_len_std
   - principal_maker_lbl_enc_material_count_enc_sum_max
+  - principal_maker_lbl_enc_material_count_enc_sum_max_diff
+  - principal_maker_lbl_enc_material_count_enc_sum_max_minus_q50
+  - principal_maker_lbl_enc_material_count_enc_sum_max_minus_q75
+  - principal_maker_lbl_enc_material_count_enc_sum_max_minus_q90
   - principal_maker_lbl_enc_material_count_enc_sum_mean
+  - principal_maker_lbl_enc_material_count_enc_sum_mean_diff
+  - principal_maker_lbl_enc_material_count_enc_sum_mean_minus_q50
+  - principal_maker_lbl_enc_material_count_enc_sum_mean_minus_q75
+  - principal_maker_lbl_enc_material_count_enc_sum_mean_minus_q90
   - principal_maker_lbl_enc_material_count_enc_sum_median
   - principal_maker_lbl_enc_material_count_enc_sum_min
+  - principal_maker_lbl_enc_material_count_enc_sum_min_diff
+  - principal_maker_lbl_enc_material_count_enc_sum_q10
+  - principal_maker_lbl_enc_material_count_enc_sum_q25
+  - principal_maker_lbl_enc_material_count_enc_sum_q50
+  - principal_maker_lbl_enc_material_count_enc_sum_q75
+  - principal_maker_lbl_enc_material_count_enc_sum_q90
   - principal_maker_lbl_enc_material_count_enc_sum_std
   - principal_maker_lbl_enc_more_title_text_len_max
   - principal_maker_lbl_enc_more_title_text_len_mean

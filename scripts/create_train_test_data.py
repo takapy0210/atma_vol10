@@ -86,9 +86,9 @@ def aggregation(df, target_col, agg_target_col):
     df[f'{target_col_name}{agg_target_col}_median'] = gr.transform('median').astype('float16')
 
     # 自身の値との差分
-    df[f'{target_col_name}{agg_target_col}_mean_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_mean']
-    df[f'{target_col_name}{agg_target_col}_max_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_max']
-    df[f'{target_col_name}{agg_target_col}_min_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_min']
+    # df[f'{target_col_name}{agg_target_col}_mean_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_mean']
+    # df[f'{target_col_name}{agg_target_col}_max_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_max']
+    # df[f'{target_col_name}{agg_target_col}_min_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_min']
 
     return df
 
@@ -528,34 +528,42 @@ def merge_data(art, color, material, person, object_collection, production_place
 def agg_features(input_df):
     """集計特徴量を生成する"""
 
-    output_df = feature_engineering.aggregation(input_df, ['century'], 'description_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['century'], 'long_title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['century'], 'more_title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['century'], 'sub_title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['century'], 'title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['century'], 'material_count_enc_sum')
+    output_df = aggregation(input_df, ['century'], 'description_text_len')
+    output_df = aggregation(input_df, ['century'], 'long_title_text_len')
+    output_df = aggregation(input_df, ['century'], 'more_title_text_len')
+    output_df = aggregation(input_df, ['century'], 'sub_title_text_len')
+    output_df = aggregation(input_df, ['century'], 'title_text_len')
+    output_df = aggregation(input_df, ['century'], 'material_count_enc_sum')
 
-    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'description_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'long_title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'more_title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'sub_title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'material_count_enc_sum')
+    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'description_text_len')
+    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'long_title_text_len')
+    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'more_title_text_len')
+    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'sub_title_text_len')
+    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'title_text_len')
+    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'material_count_enc_sum')
 
-    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'description_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'long_title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'more_title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'sub_title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'title_text_len')
-    output_df = feature_engineering.aggregation(input_df, ['principal_maker_lbl_enc'], 'material_count_enc_sum')
+    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'description_text_len')
+    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'long_title_text_len')
+    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'more_title_text_len')
+    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'sub_title_text_len')
+    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'title_text_len')
+    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'material_count_enc_sum')
 
-    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'description_text_len')
-    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'long_title_text_len')
-    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'more_title_text_len')
-    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'sub_title_text_len')
-    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'title_text_len')
-    # output_df = feature_engineering.aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'material_count_enc_sum')
+    # NG CVは上がったけどLBはあがらず
+    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'description_text_len')
+    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'long_title_text_len')
+    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'more_title_text_len')
+    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'sub_title_text_len')
+    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'title_text_len')
+    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'material_count_enc_sum')
 
+    return output_df
+
+
+@elapsed_time
+def target_encoding(input_df, train_len):
+    """ターゲットエンコーディング"""
+    output_df = category_encoder.target_encoder(input_df, input_df.iloc[:train_len, :], ['century'], 'likes')
     return output_df
 
 
@@ -620,6 +628,9 @@ def main():
 
     # マージ後のデータで集約特徴量を生成
     df = agg_features(df)
+
+    # ターゲットエンコーディング
+    # df = target_encoding(df, len(dfs['train']))
 
     # データの保存
     save_data(df, len(dfs['train']))

@@ -10,34 +10,52 @@ FEATURES:
   - acquisition_year
   - century
   - century_description_text_len_max
+  - century_description_text_len_max_diff
   - century_description_text_len_mean
+  - century_description_text_len_mean_diff
   - century_description_text_len_median
   - century_description_text_len_min
+  - century_description_text_len_min_diff
   - century_description_text_len_std
   - century_long_title_text_len_max
+  - century_long_title_text_len_max_diff
   - century_long_title_text_len_mean
+  - century_long_title_text_len_mean_diff
   - century_long_title_text_len_median
   - century_long_title_text_len_min
+  - century_long_title_text_len_min_diff
   - century_long_title_text_len_std
   - century_material_count_enc_sum_max
+  - century_material_count_enc_sum_max_diff
   - century_material_count_enc_sum_mean
+  - century_material_count_enc_sum_mean_diff
   - century_material_count_enc_sum_median
   - century_material_count_enc_sum_min
+  - century_material_count_enc_sum_min_diff
   - century_material_count_enc_sum_std
   - century_more_title_text_len_max
+  - century_more_title_text_len_max_diff
   - century_more_title_text_len_mean
+  - century_more_title_text_len_mean_diff
   - century_more_title_text_len_median
   - century_more_title_text_len_min
+  - century_more_title_text_len_min_diff
   - century_more_title_text_len_std
   - century_sub_title_text_len_max
+  - century_sub_title_text_len_max_diff
   - century_sub_title_text_len_mean
+  - century_sub_title_text_len_mean_diff
   - century_sub_title_text_len_median
   - century_sub_title_text_len_min
+  - century_sub_title_text_len_min_diff
   - century_sub_title_text_len_std
   - century_title_text_len_max
+  - century_title_text_len_max_diff
   - century_title_text_len_mean
+  - century_title_text_len_mean_diff
   - century_title_text_len_median
   - century_title_text_len_min
+  - century_title_text_len_min_diff
   - century_title_text_len_std
   - color_B
   - color_G
@@ -108,34 +126,52 @@ FEATURES:
   - principal_maker_count_enc
   - principal_maker_lbl_enc
   - principal_maker_lbl_enc_description_text_len_max
+  - principal_maker_lbl_enc_description_text_len_max_diff
   - principal_maker_lbl_enc_description_text_len_mean
+  - principal_maker_lbl_enc_description_text_len_mean_diff
   - principal_maker_lbl_enc_description_text_len_median
   - principal_maker_lbl_enc_description_text_len_min
+  - principal_maker_lbl_enc_description_text_len_min_diff
   - principal_maker_lbl_enc_description_text_len_std
   - principal_maker_lbl_enc_long_title_text_len_max
+  - principal_maker_lbl_enc_long_title_text_len_max_diff
   - principal_maker_lbl_enc_long_title_text_len_mean
+  - principal_maker_lbl_enc_long_title_text_len_mean_diff
   - principal_maker_lbl_enc_long_title_text_len_median
   - principal_maker_lbl_enc_long_title_text_len_min
+  - principal_maker_lbl_enc_long_title_text_len_min_diff
   - principal_maker_lbl_enc_long_title_text_len_std
   - principal_maker_lbl_enc_material_count_enc_sum_max
+  - principal_maker_lbl_enc_material_count_enc_sum_max_diff
   - principal_maker_lbl_enc_material_count_enc_sum_mean
+  - principal_maker_lbl_enc_material_count_enc_sum_mean_diff
   - principal_maker_lbl_enc_material_count_enc_sum_median
   - principal_maker_lbl_enc_material_count_enc_sum_min
+  - principal_maker_lbl_enc_material_count_enc_sum_min_diff
   - principal_maker_lbl_enc_material_count_enc_sum_std
   - principal_maker_lbl_enc_more_title_text_len_max
+  - principal_maker_lbl_enc_more_title_text_len_max_diff
   - principal_maker_lbl_enc_more_title_text_len_mean
+  - principal_maker_lbl_enc_more_title_text_len_mean_diff
   - principal_maker_lbl_enc_more_title_text_len_median
   - principal_maker_lbl_enc_more_title_text_len_min
+  - principal_maker_lbl_enc_more_title_text_len_min_diff
   - principal_maker_lbl_enc_more_title_text_len_std
   - principal_maker_lbl_enc_sub_title_text_len_max
+  - principal_maker_lbl_enc_sub_title_text_len_max_diff
   - principal_maker_lbl_enc_sub_title_text_len_mean
+  - principal_maker_lbl_enc_sub_title_text_len_mean_diff
   - principal_maker_lbl_enc_sub_title_text_len_median
   - principal_maker_lbl_enc_sub_title_text_len_min
+  - principal_maker_lbl_enc_sub_title_text_len_min_diff
   - principal_maker_lbl_enc_sub_title_text_len_std
   - principal_maker_lbl_enc_title_text_len_max
+  - principal_maker_lbl_enc_title_text_len_max_diff
   - principal_maker_lbl_enc_title_text_len_mean
+  - principal_maker_lbl_enc_title_text_len_mean_diff
   - principal_maker_lbl_enc_title_text_len_median
   - principal_maker_lbl_enc_title_text_len_min
+  - principal_maker_lbl_enc_title_text_len_min_diff
   - principal_maker_lbl_enc_title_text_len_std
   - principal_or_first_maker_count_enc
   - principal_or_first_maker_lbl_enc
@@ -174,34 +210,52 @@ FEATURES:
   - title_lang_ft_count_enc
   - title_lang_ft_lbl_enc
   - title_lang_ft_lbl_enc_description_text_len_max
+  - title_lang_ft_lbl_enc_description_text_len_max_diff
   - title_lang_ft_lbl_enc_description_text_len_mean
+  - title_lang_ft_lbl_enc_description_text_len_mean_diff
   - title_lang_ft_lbl_enc_description_text_len_median
   - title_lang_ft_lbl_enc_description_text_len_min
+  - title_lang_ft_lbl_enc_description_text_len_min_diff
   - title_lang_ft_lbl_enc_description_text_len_std
   - title_lang_ft_lbl_enc_long_title_text_len_max
+  - title_lang_ft_lbl_enc_long_title_text_len_max_diff
   - title_lang_ft_lbl_enc_long_title_text_len_mean
+  - title_lang_ft_lbl_enc_long_title_text_len_mean_diff
   - title_lang_ft_lbl_enc_long_title_text_len_median
   - title_lang_ft_lbl_enc_long_title_text_len_min
+  - title_lang_ft_lbl_enc_long_title_text_len_min_diff
   - title_lang_ft_lbl_enc_long_title_text_len_std
   - title_lang_ft_lbl_enc_material_count_enc_sum_max
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_diff
   - title_lang_ft_lbl_enc_material_count_enc_sum_mean
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_diff
   - title_lang_ft_lbl_enc_material_count_enc_sum_median
   - title_lang_ft_lbl_enc_material_count_enc_sum_min
+  - title_lang_ft_lbl_enc_material_count_enc_sum_min_diff
   - title_lang_ft_lbl_enc_material_count_enc_sum_std
   - title_lang_ft_lbl_enc_more_title_text_len_max
+  - title_lang_ft_lbl_enc_more_title_text_len_max_diff
   - title_lang_ft_lbl_enc_more_title_text_len_mean
+  - title_lang_ft_lbl_enc_more_title_text_len_mean_diff
   - title_lang_ft_lbl_enc_more_title_text_len_median
   - title_lang_ft_lbl_enc_more_title_text_len_min
+  - title_lang_ft_lbl_enc_more_title_text_len_min_diff
   - title_lang_ft_lbl_enc_more_title_text_len_std
   - title_lang_ft_lbl_enc_sub_title_text_len_max
+  - title_lang_ft_lbl_enc_sub_title_text_len_max_diff
   - title_lang_ft_lbl_enc_sub_title_text_len_mean
+  - title_lang_ft_lbl_enc_sub_title_text_len_mean_diff
   - title_lang_ft_lbl_enc_sub_title_text_len_median
   - title_lang_ft_lbl_enc_sub_title_text_len_min
+  - title_lang_ft_lbl_enc_sub_title_text_len_min_diff
   - title_lang_ft_lbl_enc_sub_title_text_len_std
   - title_lang_ft_lbl_enc_title_text_len_max
+  - title_lang_ft_lbl_enc_title_text_len_max_diff
   - title_lang_ft_lbl_enc_title_text_len_mean
+  - title_lang_ft_lbl_enc_title_text_len_mean_diff
   - title_lang_ft_lbl_enc_title_text_len_median
   - title_lang_ft_lbl_enc_title_text_len_min
+  - title_lang_ft_lbl_enc_title_text_len_min_diff
   - title_lang_ft_lbl_enc_title_text_len_std
   - title_lbl_enc
   - title_text_len

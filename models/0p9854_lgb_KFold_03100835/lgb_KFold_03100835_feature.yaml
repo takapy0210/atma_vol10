@@ -139,6 +139,36 @@ FEATURES:
   - principal_maker_lbl_enc_title_text_len_std
   - principal_or_first_maker_count_enc
   - principal_or_first_maker_lbl_enc
+  - principal_or_first_maker_lbl_enc_description_text_len_max
+  - principal_or_first_maker_lbl_enc_description_text_len_mean
+  - principal_or_first_maker_lbl_enc_description_text_len_median
+  - principal_or_first_maker_lbl_enc_description_text_len_min
+  - principal_or_first_maker_lbl_enc_description_text_len_std
+  - principal_or_first_maker_lbl_enc_long_title_text_len_max
+  - principal_or_first_maker_lbl_enc_long_title_text_len_mean
+  - principal_or_first_maker_lbl_enc_long_title_text_len_median
+  - principal_or_first_maker_lbl_enc_long_title_text_len_min
+  - principal_or_first_maker_lbl_enc_long_title_text_len_std
+  - principal_or_first_maker_lbl_enc_material_count_enc_sum_max
+  - principal_or_first_maker_lbl_enc_material_count_enc_sum_mean
+  - principal_or_first_maker_lbl_enc_material_count_enc_sum_median
+  - principal_or_first_maker_lbl_enc_material_count_enc_sum_min
+  - principal_or_first_maker_lbl_enc_material_count_enc_sum_std
+  - principal_or_first_maker_lbl_enc_more_title_text_len_max
+  - principal_or_first_maker_lbl_enc_more_title_text_len_mean
+  - principal_or_first_maker_lbl_enc_more_title_text_len_median
+  - principal_or_first_maker_lbl_enc_more_title_text_len_min
+  - principal_or_first_maker_lbl_enc_more_title_text_len_std
+  - principal_or_first_maker_lbl_enc_sub_title_text_len_max
+  - principal_or_first_maker_lbl_enc_sub_title_text_len_mean
+  - principal_or_first_maker_lbl_enc_sub_title_text_len_median
+  - principal_or_first_maker_lbl_enc_sub_title_text_len_min
+  - principal_or_first_maker_lbl_enc_sub_title_text_len_std
+  - principal_or_first_maker_lbl_enc_title_text_len_max
+  - principal_or_first_maker_lbl_enc_title_text_len_mean
+  - principal_or_first_maker_lbl_enc_title_text_len_median
+  - principal_or_first_maker_lbl_enc_title_text_len_min
+  - principal_or_first_maker_lbl_enc_title_text_len_std
   - productionPlaces_0_lbl_enc
   - productionPlaces_1_lbl_enc
   - productionPlaces_by_object

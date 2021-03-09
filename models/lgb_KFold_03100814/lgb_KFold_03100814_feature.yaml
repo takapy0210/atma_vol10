@@ -184,9 +184,23 @@ FEATURES:
   - title_lang_ft_lbl_enc_long_title_text_len_min
   - title_lang_ft_lbl_enc_long_title_text_len_std
   - title_lang_ft_lbl_enc_material_count_enc_sum_max
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_diff
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_minus_q50
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_minus_q75
+  - title_lang_ft_lbl_enc_material_count_enc_sum_max_minus_q90
   - title_lang_ft_lbl_enc_material_count_enc_sum_mean
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_diff
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_minus_q50
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_minus_q75
+  - title_lang_ft_lbl_enc_material_count_enc_sum_mean_minus_q90
   - title_lang_ft_lbl_enc_material_count_enc_sum_median
   - title_lang_ft_lbl_enc_material_count_enc_sum_min
+  - title_lang_ft_lbl_enc_material_count_enc_sum_min_diff
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q10
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q25
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q50
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q75
+  - title_lang_ft_lbl_enc_material_count_enc_sum_q90
   - title_lang_ft_lbl_enc_material_count_enc_sum_std
   - title_lang_ft_lbl_enc_more_title_text_len_max
   - title_lang_ft_lbl_enc_more_title_text_len_mean
