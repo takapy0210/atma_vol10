@@ -16,6 +16,7 @@ import pandas as pd
 import yaml
 from PIL import ImageColor
 from tqdm import tqdm as tqdm
+from fasttext import load_model
 
 from takaggle.feature import category_encoder, feature_engineering
 from takaggle.training.util import Logger
@@ -28,6 +29,7 @@ with open(CONFIG_FILE) as file:
     yml = yaml.load(file, Loader=yaml.FullLoader)
 RAW_DATA_DIR_NAME = yml['SETTING']['RAW_DATA_DIR_NAME']
 FEATURE_DIR_NAME = yml['SETTING']['FEATURE_DIR_NAME']
+EXTERNAL_DIR_NAME = yml['SETTING']['EXTERNAL_DIR_NAME']
 TRAIN_FILE_NAME = yml['SETTING']['TRAIN_FILE_NAME']
 TEST_FILE_NAME = yml['SETTING']['TEST_FILE_NAME']
 TARGET_COL = yml['SETTING']['TARGET_COL']
@@ -470,6 +472,10 @@ def preprocessing_art(input_df):
     )
     output_df['century'] = century.values.astype(np.int8)
 
+    # タイトルの言語情報
+    fasttext_model = load_model(EXTERNAL_DIR_NAME + 'lid.176.bin')
+    output_df['title_lang_ft'] = output_df['title'].fillna('').map(lambda x: fasttext_model.predict(x.replace("\n", ""))[0][0])
+
     # テキストカラムの特徴量生成
     text_cols = [
         'title',
@@ -491,7 +497,7 @@ def preprocessing_art(input_df):
 
     # 学習できるカラムだけ取得
     num_cols = feature_engineering.get_num_col(output_df)
-    cat_cols = ['title', 'principal_maker', 'principal_or_first_maker', 'copyright_holder',
+    cat_cols = ['title', 'title_lang_ft', 'principal_maker', 'principal_or_first_maker', 'copyright_holder',
                 'acquisition_method', 'acquisition_credit_line']  # ラベルエンコードするカテゴリカラム
 
     output_df = output_df[['object_id'] + num_cols + cat_cols]
@@ -527,6 +533,13 @@ def agg_features(input_df):
     output_df = feature_engineering.aggregation(input_df, ['century'], 'sub_title_text_len')
     output_df = feature_engineering.aggregation(input_df, ['century'], 'title_text_len')
     output_df = feature_engineering.aggregation(input_df, ['century'], 'material_count_enc_sum')
+
+    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'description_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'long_title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'more_title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'sub_title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'title_text_len')
+    output_df = feature_engineering.aggregation(input_df, ['title_lang_ft_lbl_enc'], 'material_count_enc_sum')
 
     return output_df
 
