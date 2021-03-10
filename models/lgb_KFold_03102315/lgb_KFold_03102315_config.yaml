@@ -14,12 +14,12 @@ SETTING:
   CALC_SHAP: False # SHAPでの重要度を計算するか否か[True or False]
   SAVE_TRAIN_PRED: True # 学習データでの推論結果を保存するか否か[True or False]
   CV:
-    method: 'StratifiedKFold' # [KFold, StratifiedKFold ,GroupKFold, StratifiedGroupKFold, CustomTimeSeriesSplitter, TrainTestSplit]から選択可能
+    method: 'KFold' # [KFold, StratifiedKFold ,GroupKFold, StratifiedGroupKFold, CustomTimeSeriesSplitter, TrainTestSplit]から選択可能
     n_splits: 10 # k数
     random_state: 42 # seed
     shuffle: True # データをシャッフルするか否か
-    cv_target_gr: 'century' # GroupKFold or StratifiedGroupKFold の場合に対象とするカラム名を設定
-    cv_target_sf: 'century' # StratifiedKFold or StratifiedGroupKFold の場合に対象とするカラム名を設定
+    cv_target_gr: '' # GroupKFold or StratifiedGroupKFold の場合に対象とするカラム名を設定
+    cv_target_sf: '' # StratifiedKFold or StratifiedGroupKFold の場合に対象とするカラム名を設定
 
 MODEL_LGB:
   # https://lightgbm.readthedocs.io/en/latest/Parameters.html#parameters
