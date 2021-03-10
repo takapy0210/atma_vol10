@@ -509,7 +509,8 @@ def preprocessing_art(input_df):
 
 
 @elapsed_time
-def merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker):
+def merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker, principal_maker_occupation, text_hier,
+               material_w2v, collection_w2v, technique_w2v, material_collection_w2v, material_technique_w2v, collection_technique_w2v, material_collection_technique_w2v):
     """データをマージする"""
     outout_df = pd.merge(art, color, how='left', on='object_id')
     outout_df = pd.merge(outout_df, material, how='left', on='object_id')
@@ -521,6 +522,13 @@ def merge_data(art, color, material, person, object_collection, production_place
     outout_df = pd.merge(outout_df, principal_maker, how='left', on='object_id')
     # outout_df = pd.merge(outout_df, principal_maker_occupation, how='left', on='object_id')
     # outout_df = pd.merge(outout_df, text_hier, how='left', on='object_id')
+    # outout_df = pd.merge(outout_df, material_w2v, how='left', on='object_id')
+    # outout_df = pd.merge(outout_df, collection_w2v, how='left', on='object_id')
+    # outout_df = pd.merge(outout_df, technique_w2v, how='left', on='object_id')
+    # outout_df = pd.merge(outout_df, material_collection_w2v, how='left', on='object_id')
+    # outout_df = pd.merge(outout_df, material_technique_w2v, how='left', on='object_id')
+    # outout_df = pd.merge(outout_df, collection_technique_w2v, how='left', on='object_id')
+    # outout_df = pd.merge(outout_df, material_collection_technique_w2v, how='left', on='object_id')
     return outout_df
 
 
@@ -549,6 +557,30 @@ def agg_features(input_df):
     output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'title_text_len')
     output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'material_count_enc_sum')
 
+    # NG CVさがった
+    # output_df = aggregation(input_df, ['object_collection_0_lbl_enc'], 'description_text_len')
+    # output_df = aggregation(input_df, ['object_collection_0_lbl_enc'], 'long_title_text_len')
+    # output_df = aggregation(input_df, ['object_collection_0_lbl_enc'], 'more_title_text_len')
+    # output_df = aggregation(input_df, ['object_collection_0_lbl_enc'], 'sub_title_text_len')
+    # output_df = aggregation(input_df, ['object_collection_0_lbl_enc'], 'title_text_len')
+    # output_df = aggregation(input_df, ['object_collection_0_lbl_enc'], 'material_count_enc_sum')
+
+    # NG CV下がった
+    # output_df = aggregation(input_df, ['production_period'], 'description_text_len')
+    # output_df = aggregation(input_df, ['production_period'], 'long_title_text_len')
+    # output_df = aggregation(input_df, ['production_period'], 'more_title_text_len')
+    # output_df = aggregation(input_df, ['production_period'], 'sub_title_text_len')
+    # output_df = aggregation(input_df, ['production_period'], 'title_text_len')
+    # output_df = aggregation(input_df, ['production_period'], 'material_count_enc_sum')
+
+    # NG CVさがった
+    # output_df = aggregation(input_df, ['maker_name_0_lbl_enc'], 'description_text_len')
+    # output_df = aggregation(input_df, ['maker_name_0_lbl_enc'], 'long_title_text_len')
+    # output_df = aggregation(input_df, ['maker_name_0_lbl_enc'], 'more_title_text_len')
+    # output_df = aggregation(input_df, ['maker_name_0_lbl_enc'], 'sub_title_text_len')
+    # output_df = aggregation(input_df, ['maker_name_0_lbl_enc'], 'title_text_len')
+    # output_df = aggregation(input_df, ['maker_name_0_lbl_enc'], 'material_count_enc_sum')
+
     # NG CVは上がったけどLBはあがらず
     # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'description_text_len')
     # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'long_title_text_len')
@@ -563,7 +595,8 @@ def agg_features(input_df):
 @elapsed_time
 def target_encoding(input_df, train_len):
     """ターゲットエンコーディング"""
-    output_df = category_encoder.target_encoder(input_df, input_df.iloc[:train_len, :], ['century'], 'likes')
+    output_df = category_encoder.target_encoder(input_df, input_df.iloc[:train_len, :], ['century', 'principal_maker_lbl_enc'], 'likes')
+
     return output_df
 
 
@@ -613,18 +646,28 @@ def main():
     technique = preprocessing_technique(dfs['technique'].rename(columns={'name': 'technique_name'}))
     maker = preprocessing_maker(dfs['maker'])
     principal_maker = preprocessing_principal_maker(dfs['principal_maker'])
-    # principal_all = pd.merge(dfs['principal_maker'][['id', 'object_id']], dfs['principal_maker_occupation'], how='left', on='id')
-    # principal_maker_occupation = preprocessing_principal_maker_occupation(principal_all.rename(columns={'name': 'maker_occupation_name'}))
+    principal_all = pd.merge(dfs['principal_maker'][['id', 'object_id']], dfs['principal_maker_occupation'], how='left', on='id')
+    principal_maker_occupation = preprocessing_principal_maker_occupation(principal_all.rename(columns={'name': 'maker_occupation_name'}))
 
     # train / testの前処理
     art = pd.concat([dfs['train'], dfs['test']], axis=0, sort=False).reset_index(drop=True)
     art = preprocessing_art(art)
 
     # テキストカラムから取得したword2vec特徴量
-    # text_hier = pd.read_pickle(FEATURE_DIR_NAME + 'swem_hier_df.pkl')
+    text_hier = pd.read_pickle(FEATURE_DIR_NAME + 'swem_hier_df.pkl')
+
+    # material情報のw2vベクトル
+    material_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'material_w2v.pkl')
+    collection_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'collection_w2v.pkl')
+    technique_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'technique_w2v.pkl')
+    material_collection_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'material_collection_w2v.pkl')
+    material_technique_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'material_technique_w2v.pkl')
+    collection_technique_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'collection_technique_w2v.pkl')
+    material_collection_technique_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'material_collection_technique_w2v.pkl')
 
     # データをマージしてtrainとtestを生成する
-    df = merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker)
+    df = merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker, principal_maker_occupation, text_hier,
+                    material_w2v, collection_w2v, technique_w2v, material_collection_w2v, material_technique_w2v, collection_technique_w2v, material_collection_technique_w2v)
 
     # マージ後のデータで集約特徴量を生成
     df = agg_features(df)

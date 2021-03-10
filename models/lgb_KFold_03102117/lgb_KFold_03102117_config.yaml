@@ -15,7 +15,7 @@ SETTING:
   SAVE_TRAIN_PRED: True # 学習データでの推論結果を保存するか否か[True or False]
   CV:
     method: 'KFold' # [KFold, StratifiedKFold ,GroupKFold, StratifiedGroupKFold, CustomTimeSeriesSplitter, TrainTestSplit]から選択可能
-    n_splits: 10 # k数
+    n_splits: 5 # k数
     random_state: 42 # seed
     shuffle: True # データをシャッフルするか否か
     cv_target_gr: '' # GroupKFold or StratifiedGroupKFold の場合に対象とするカラム名を設定
