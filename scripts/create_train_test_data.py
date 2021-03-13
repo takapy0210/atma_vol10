@@ -1,6 +1,6 @@
 """特徴量生成スクリプト
     実行コマンド
-        docker exec -it 962f598235e9 /bin/bash -c "cd ./atmaCup_vol10/scripts && python3 create_train_test_data.py"
+        docker exec -it 773d1c8788c8 /bin/bash -c "cd ./atmaCup_vol10/scripts && python3 create_train_test_data.py"
 
 """
 
@@ -17,6 +17,8 @@ import yaml
 from PIL import ImageColor
 from tqdm import tqdm as tqdm
 from fasttext import load_model
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import TruncatedSVD
 
 from takaggle.feature import category_encoder, feature_engineering
 from takaggle.training.util import Logger
@@ -222,6 +224,14 @@ def preprocessing_material(input_df):
     cumcount_df = get_cumcount_df(input_df, 'material', 'material_name')
     output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
 
+    # crosstabで値をカラムに設定
+    vc = input_df['material_name'].value_counts()
+    use_names = vc[vc > 10].index  # 出現回数N以上に絞る
+    idx = input_df['material_name'].isin(use_names)
+    _use_df = input_df[idx].reset_index(drop=True)
+    _df = pd.crosstab(_use_df['object_id'], _use_df['material_name']).add_prefix('material_name_').reset_index()
+    output_df = pd.merge(output_df, _df, how='left', on='object_id')
+
     return output_df
 
 
@@ -246,6 +256,14 @@ def preprocessing_object(input_df):
     # 素材を横に並べたDFを取得
     cumcount_df = get_cumcount_df(input_df, 'object_collection', 'object_name')
     output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
+
+    # crosstabで値をカラムに設定
+    vc = input_df['object_name'].value_counts()
+    use_names = vc[vc > 0].index  # 出現回数N以上に絞る
+    idx = input_df['object_name'].isin(use_names)
+    _use_df = input_df[idx].reset_index(drop=True)
+    _df = pd.crosstab(_use_df['object_id'], _use_df['object_name']).add_prefix('object_name_').reset_index()
+    output_df = pd.merge(output_df, _df, how='left', on='object_id')
 
     return output_df
 
@@ -274,6 +292,15 @@ def preprocessing_person(input_df):
     cumcount_df = get_cumcount_df(input_df, 'person', 'person_name')
     output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
 
+    # crosstabで値をカラムに設定
+    # input_df['person_name'] = input_df['person_name'].str.replace(',', ' ')
+    # vc = input_df['person_name'].value_counts()
+    # use_names = vc[vc > 20].index  # 出現回数N以上に絞る
+    # idx = input_df['person_name'].isin(use_names)
+    # _use_df = input_df[idx].reset_index(drop=True)
+    # _df = pd.crosstab(_use_df['object_id'], _use_df['person_name']).reset_index()
+    # output_df = pd.merge(output_df, _df, how='left', on='object_id')
+
     return output_df
 
 
@@ -286,6 +313,7 @@ def preprocessing_production_place(input_df):
     col:
         object_id
         production_place_name: 場所の名前
+        production_country_name: 正規化したあとの場所の名前
     """
     # カウントエンコーディング
     count_df = category_encoder.count_encoder(input_df, ['production_place_name'])
@@ -299,6 +327,28 @@ def preprocessing_production_place(input_df):
     # 素材を横に並べたDFを取得
     cumcount_df = get_cumcount_df(input_df, 'production_place', 'production_place_name')
     output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
+
+    # # カウントエンコーディング
+    # count_df = category_encoder.count_encoder(input_df, ['production_country_name'])
+    # # object_idごとにどのくらいレアか
+    # rare_df = count_df.groupby('object_id')[['production_country_name_count_enc']].sum().reset_index().rename(columns={'production_country_name_count_enc': 'production_country_name_count_enc_sum'})
+
+    # # object_idごとにいくつあるか
+    # sum_df = input_df.groupby('object_id')[['production_country_name']].count().reset_index().rename(columns={'production_country_name': 'production_country_name_sum_by_object'})
+    # _output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
+    # output_df = pd.merge(output_df, _output_df, how='left', on='object_id')
+
+    # 素材を横に並べたDFを取得
+    # cumcount_df = get_cumcount_df(input_df, 'production_country', 'production_country_name')
+    # output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
+
+    # crosstabで値をカラムに設定
+    vc = input_df['production_country_name'].value_counts()
+    use_names = vc[vc > 0].index  # 出現回数N以上に絞る
+    idx = input_df['production_country_name'].isin(use_names)
+    _use_df = input_df[idx].reset_index(drop=True)
+    _df = pd.crosstab(_use_df['object_id'], _use_df['production_country_name']).add_prefix('production_country_name_').reset_index()
+    output_df = pd.merge(output_df, _df, how='left', on='object_id')
 
     return output_df
 
@@ -324,6 +374,14 @@ def preprocessing_technique(input_df):
     # 素材を横に並べたDFを取得
     cumcount_df = get_cumcount_df(input_df, 'technique', 'technique_name')
     output_df = pd.merge(output_df, cumcount_df, how='left', on='object_id')
+
+    # crosstabで値をカラムに設定
+    vc = input_df['technique_name'].value_counts()
+    use_names = vc[vc > 0].index  # 出現回数N以上に絞る
+    idx = input_df['technique_name'].isin(use_names)
+    _use_df = input_df[idx].reset_index(drop=True)
+    _df = pd.crosstab(_use_df['object_id'], _use_df['technique_name']).add_prefix('technique_name_').reset_index()
+    output_df = pd.merge(output_df, _df, how='left', on='object_id')
 
     return output_df
 
@@ -436,6 +494,19 @@ def preprocessing_principal_maker_occupation(input_df):
 
 
 @elapsed_time
+def get_text_features(input_df, text_col):
+    """TF-IDF値を計算し、SVDで圧縮"""
+
+    token_df = input_df[text_col].values.tolist()
+    tfidf_vec = TfidfVectorizer().fit_transform(token_df)
+    svd = TruncatedSVD(n_components=50, random_state=42)
+    output_df = svd.fit_transform(tfidf_vec.toarray())
+    output_df = pd.DataFrame(output_df).add_prefix(f'{text_col}_svd_')
+
+    return output_df
+
+
+@elapsed_time
 def preprocessing_art(input_df):
     """art(train/test)の前処理"""
 
@@ -472,9 +543,12 @@ def preprocessing_art(input_df):
     )
     output_df['century'] = century.values.astype(np.int8)
 
-    # タイトルの言語情報
+    # 言語情報
     fasttext_model = load_model(EXTERNAL_DIR_NAME + 'lid.176.bin')
     output_df['title_lang_ft'] = output_df['title'].fillna('').map(lambda x: fasttext_model.predict(x.replace("\n", ""))[0][0])
+    output_df['description_lang_ft'] = output_df['description'].fillna('').map(lambda x: fasttext_model.predict(x.replace("\n", ""))[0][0])
+    output_df['long_title_lang_ft'] = output_df['long_title'].fillna('').map(lambda x: fasttext_model.predict(x.replace("\n", ""))[0][0])
+    output_df['more_title_lang_ft'] = output_df['more_title'].fillna('').map(lambda x: fasttext_model.predict(x.replace("\n", ""))[0][0])
 
     # テキストカラムの特徴量生成
     text_cols = [
@@ -488,6 +562,10 @@ def preprocessing_art(input_df):
     for c in text_cols:
         output_df[f'{c}_text_len'] = output_df[c].str.len()
 
+    # TF-IDFなどの特異値
+    title_tfidf_df = get_text_features(output_df, 'title')
+    output_df = pd.concat([output_df, title_tfidf_df], axis=1)
+
     # bert vecを結合
     # ref: https://colab.research.google.com/drive/1SEpFu6BuKnf-f7WrjBy3PiDCW4uyrB8O?authuser=3#scrollTo=n7RydsVa945l
     # title_bert_vev = pd.read_pickle(FEATURE_DIR_NAME + 'title_bert_vec.pkl')  # title
@@ -497,7 +575,8 @@ def preprocessing_art(input_df):
 
     # 学習できるカラムだけ取得
     num_cols = feature_engineering.get_num_col(output_df)
-    cat_cols = ['title', 'title_lang_ft', 'principal_maker', 'principal_or_first_maker', 'copyright_holder',
+    cat_cols = ['title', 'title_lang_ft', 'description_lang_ft', 'long_title_lang_ft', 'more_title_lang_ft',
+                'principal_maker', 'principal_or_first_maker', 'copyright_holder',
                 'acquisition_method', 'acquisition_credit_line']  # ラベルエンコードするカテゴリカラム
 
     output_df = output_df[['object_id'] + num_cols + cat_cols]
@@ -509,7 +588,7 @@ def preprocessing_art(input_df):
 
 
 @elapsed_time
-def merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker, principal_maker_occupation, text_hier,
+def merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker, principal_maker_occupation, more_title_w2v,
                material_w2v, collection_w2v, technique_w2v, material_collection_w2v, material_technique_w2v, collection_technique_w2v, material_collection_technique_w2v):
     """データをマージする"""
     outout_df = pd.merge(art, color, how='left', on='object_id')
@@ -521,7 +600,7 @@ def merge_data(art, color, material, person, object_collection, production_place
     outout_df = pd.merge(outout_df, maker, how='left', left_on='principal_maker', right_on='name')
     outout_df = pd.merge(outout_df, principal_maker, how='left', on='object_id')
     # outout_df = pd.merge(outout_df, principal_maker_occupation, how='left', on='object_id')
-    # outout_df = pd.merge(outout_df, text_hier, how='left', on='object_id')
+    # outout_df = pd.merge(outout_df, more_title_w2v, how='left', on='object_id')
     # outout_df = pd.merge(outout_df, material_w2v, how='left', on='object_id')
     # outout_df = pd.merge(outout_df, collection_w2v, how='left', on='object_id')
     # outout_df = pd.merge(outout_df, technique_w2v, how='left', on='object_id')
@@ -608,6 +687,11 @@ def save_data(input_df, train_len):
     train = input_df.iloc[:train_len, :]
     test = input_df.iloc[train_len:, :]
     test = test.drop(TARGET_COL, axis=1)
+
+    # likes_log_intが7以上は外れ値とみなしてまるめる
+    # train = train[train['likes_log_int'] < 7]
+    train.loc[train['likes_log_int'] >= 7, 'likes_log_int'] = 7
+
     # indexの初期化
     train = train.reset_index(drop=True)
     test = test.reset_index(drop=True)
@@ -621,11 +705,12 @@ def save_data(input_df, train_len):
     # 学習に使用できるカラムを出力
     category_cols = feature_engineering.get_category_col(input_df)
     # 学習に不要なカラム出力から除外
-    features_list = list(set(input_df.columns) - {TARGET_COL} - set(category_cols))
+    features_list = list(set(input_df.columns) - {TARGET_COL} - set(category_cols) - set(['likes_log_int']))
 
     # 特徴量リストの保存
     features_list = sorted(features_list)
     with open(FEATURE_DIR_NAME + 'features_list.txt', 'wt') as f:
+        f.write('FEATURES:' + '\n')
         for i in range(len(features_list)):
             f.write('  - ' + str(features_list[i]) + '\n')
 
@@ -654,7 +739,7 @@ def main():
     art = preprocessing_art(art)
 
     # テキストカラムから取得したword2vec特徴量
-    text_hier = pd.read_pickle(FEATURE_DIR_NAME + 'swem_hier_df.pkl')
+    more_title_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'more_title_swem_avg_df.pkl')
 
     # material情報のw2vベクトル
     material_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'material_w2v.pkl')
@@ -666,7 +751,7 @@ def main():
     material_collection_technique_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'material_collection_technique_w2v.pkl')
 
     # データをマージしてtrainとtestを生成する
-    df = merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker, principal_maker_occupation, text_hier,
+    df = merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker, principal_maker_occupation, more_title_w2v,
                     material_w2v, collection_w2v, technique_w2v, material_collection_w2v, material_technique_w2v, collection_technique_w2v, material_collection_technique_w2v)
 
     # マージ後のデータで集約特徴量を生成

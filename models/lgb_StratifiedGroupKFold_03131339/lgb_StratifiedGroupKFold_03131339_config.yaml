@@ -14,7 +14,7 @@ SETTING:
   CALC_SHAP: False # SHAPでの重要度を計算するか否か[True or False]
   SAVE_TRAIN_PRED: True # 学習データでの推論結果を保存するか否か[True or False]
   CV:
-    method: 'StratifiedKFold' # [KFold, StratifiedKFold ,GroupKFold, StratifiedGroupKFold, CustomTimeSeriesSplitter, TrainTestSplit]から選択可能
+    method: 'StratifiedGroupKFold' # [KFold, StratifiedKFold ,GroupKFold, StratifiedGroupKFold, CustomTimeSeriesSplitter, TrainTestSplit]から選択可能
     n_splits: 5 # k数
     random_state: 42 # seed
     shuffle: True # データをシャッフルするか否か
