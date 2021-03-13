@@ -104,6 +104,56 @@ FEATURES:
   - material_sum_by_object
   - more_title_lang_ft_count_enc
   - more_title_lang_ft_lbl_enc
+  - more_title_swem_avg_d_0
+  - more_title_swem_avg_d_1
+  - more_title_swem_avg_d_10
+  - more_title_swem_avg_d_11
+  - more_title_swem_avg_d_12
+  - more_title_swem_avg_d_13
+  - more_title_swem_avg_d_14
+  - more_title_swem_avg_d_15
+  - more_title_swem_avg_d_16
+  - more_title_swem_avg_d_17
+  - more_title_swem_avg_d_18
+  - more_title_swem_avg_d_19
+  - more_title_swem_avg_d_2
+  - more_title_swem_avg_d_20
+  - more_title_swem_avg_d_21
+  - more_title_swem_avg_d_22
+  - more_title_swem_avg_d_23
+  - more_title_swem_avg_d_24
+  - more_title_swem_avg_d_25
+  - more_title_swem_avg_d_26
+  - more_title_swem_avg_d_27
+  - more_title_swem_avg_d_28
+  - more_title_swem_avg_d_29
+  - more_title_swem_avg_d_3
+  - more_title_swem_avg_d_30
+  - more_title_swem_avg_d_31
+  - more_title_swem_avg_d_32
+  - more_title_swem_avg_d_33
+  - more_title_swem_avg_d_34
+  - more_title_swem_avg_d_35
+  - more_title_swem_avg_d_36
+  - more_title_swem_avg_d_37
+  - more_title_swem_avg_d_38
+  - more_title_swem_avg_d_39
+  - more_title_swem_avg_d_4
+  - more_title_swem_avg_d_40
+  - more_title_swem_avg_d_41
+  - more_title_swem_avg_d_42
+  - more_title_swem_avg_d_43
+  - more_title_swem_avg_d_44
+  - more_title_swem_avg_d_45
+  - more_title_swem_avg_d_46
+  - more_title_swem_avg_d_47
+  - more_title_swem_avg_d_48
+  - more_title_swem_avg_d_49
+  - more_title_swem_avg_d_5
+  - more_title_swem_avg_d_6
+  - more_title_swem_avg_d_7
+  - more_title_swem_avg_d_8
+  - more_title_swem_avg_d_9
   - more_title_text_len
   - nationality_lbl_enc
   - object_collection_0_lbl_enc
@@ -302,54 +352,4 @@ FEATURES:
   - title_lang_ft_lbl_enc_title_text_len_min
   - title_lang_ft_lbl_enc_title_text_len_std
   - title_lbl_enc
-  - title_svd_0
-  - title_svd_1
-  - title_svd_10
-  - title_svd_11
-  - title_svd_12
-  - title_svd_13
-  - title_svd_14
-  - title_svd_15
-  - title_svd_16
-  - title_svd_17
-  - title_svd_18
-  - title_svd_19
-  - title_svd_2
-  - title_svd_20
-  - title_svd_21
-  - title_svd_22
-  - title_svd_23
-  - title_svd_24
-  - title_svd_25
-  - title_svd_26
-  - title_svd_27
-  - title_svd_28
-  - title_svd_29
-  - title_svd_3
-  - title_svd_30
-  - title_svd_31
-  - title_svd_32
-  - title_svd_33
-  - title_svd_34
-  - title_svd_35
-  - title_svd_36
-  - title_svd_37
-  - title_svd_38
-  - title_svd_39
-  - title_svd_4
-  - title_svd_40
-  - title_svd_41
-  - title_svd_42
-  - title_svd_43
-  - title_svd_44
-  - title_svd_45
-  - title_svd_46
-  - title_svd_47
-  - title_svd_48
-  - title_svd_49
-  - title_svd_5
-  - title_svd_6
-  - title_svd_7
-  - title_svd_8
-  - title_svd_9
   - title_text_len

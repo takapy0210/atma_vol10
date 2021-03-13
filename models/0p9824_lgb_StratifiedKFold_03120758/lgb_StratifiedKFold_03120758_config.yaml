@@ -19,7 +19,7 @@ SETTING:
     random_state: 42 # seed
     shuffle: True # データをシャッフルするか否か
     cv_target_gr: 'century' # GroupKFold or StratifiedGroupKFold の場合に対象とするカラム名を設定
-    cv_target_sf: 'likes_log_int' # StratifiedKFold or StratifiedGroupKFold の場合に対象とするカラム名を設定
+    cv_target_sf: 'century' # StratifiedKFold or StratifiedGroupKFold の場合に対象とするカラム名を設定
 
 MODEL_LGB:
   # https://lightgbm.readthedocs.io/en/latest/Parameters.html#parameters

@@ -1,6 +1,6 @@
 """学習スクリプト
     実行コマンド
-        docker exec -it 962f598235e9 /bin/bash -c "cd ./atmaCup_vol10/scripts && python3 run.py"
+        docker exec -it 773d1c8788c8 /bin/bash -c "cd ./atmaCup_vol10/scripts && python3 run.py"
 
     MLFlow起動コマンド
 
@@ -36,7 +36,7 @@ with open(CONFIG_FILE) as file:
 MODEL_DIR_NAME = yml['SETTING']['MODEL_DIR_NAME']
 EXPERIMENT_NAME = yml['SETTING']['EXPERIMENT_NAME']
 TRACKING_DIR = yml['SETTING']['TRACKING_DIR']
-NOTE = '擬似ラベルを追加'  # どんな実験内容かを簡単にメモする
+NOTE = 'add likes_log_int cv'  # どんな実験内容かを簡単にメモする
 
 # 使用する特徴量のロード
 with open('../configs/feature.yaml') as file:
@@ -200,7 +200,7 @@ def main(model_type='lgb') -> str:
     try:
         # インスタンス生成
         runner = Runner(run_name, model_cls, features, setting, model_params, cv, category_col,
-                        is_add_pseudo=True, pseudo_label_file='pseudo_lb_0p9807.pkl')
+                        is_add_pseudo=False, pseudo_label_file='pseudo_lb_0p9807.pkl')
         use_feature_name = runner.get_feature_name()  # 今回の学習で使用する特徴量名を取得
 
         # モデルのconfigをjsonで保存
