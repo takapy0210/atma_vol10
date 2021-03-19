@@ -494,16 +494,25 @@ def preprocessing_principal_maker_occupation(input_df):
 
 
 @elapsed_time
-def get_text_features(input_df, text_col):
+def get_text_features_svd(input_df, text_col):
     """TF-IDF値を計算し、SVDで圧縮"""
 
-    token_df = input_df[text_col].values.tolist()
-    tfidf_vec = TfidfVectorizer().fit_transform(token_df)
-    svd = TruncatedSVD(n_components=50, random_state=42)
-    output_df = svd.fit_transform(tfidf_vec.toarray())
-    output_df = pd.DataFrame(output_df).add_prefix(f'{text_col}_svd_')
+    # token_df = input_df[text_col].values.tolist()
+    # tfidf_vec = TfidfVectorizer().fit_transform(token_df)
+    # svd = TruncatedSVD(n_components=50, random_state=42)
+    # output_df = svd.fit_transform(tfidf_vec.toarray())
+    # output_df = pd.DataFrame(output_df).add_prefix(f'{text_col}_svd_')
+
+    # 外部ファイルから読み込み
+    text_df = pd.read_pickle(FEATURE_DIR_NAME + 'text_tfidf_svd50.pkl')
+    emb_cols = [col for col in text_df.columns if col.startswith(f'{text_col}_')]
+    output_df = text_df[emb_cols]
 
     return output_df
+
+
+# @elapsed_time
+# def get_text_features_umap(input_df, text_col):
 
 
 @elapsed_time
@@ -563,8 +572,23 @@ def preprocessing_art(input_df):
         output_df[f'{c}_text_len'] = output_df[c].str.len()
 
     # TF-IDFなどの特異値
-    title_tfidf_df = get_text_features(output_df, 'title')
+    output_df['title'] = output_df['title'].fillna('nan')
+    output_df['description'] = output_df['description'].fillna('nan')
+    output_df['long_title'] = output_df['long_title'].fillna('nan')
+    output_df['more_title'] = output_df['more_title'].fillna('nan')
+    title_tfidf_df = get_text_features_svd(output_df, 'title')
     output_df = pd.concat([output_df, title_tfidf_df], axis=1)
+    description_tfidf_df = get_text_features_svd(output_df, 'description')
+    output_df = pd.concat([output_df, description_tfidf_df], axis=1)
+    title_tfidf_df = get_text_features_svd(output_df, 'long_title')
+    output_df = pd.concat([output_df, title_tfidf_df], axis=1)
+    description_tfidf_df = get_text_features_svd(output_df, 'more_title')
+    output_df = pd.concat([output_df, description_tfidf_df], axis=1)
+
+    # title_tfidf_df = get_text_features_umap(output_df, 'title')
+    # output_df = pd.concat([output_df, title_tfidf_df], axis=1)
+    # description_tfidf_df = get_text_features_umap(output_df, 'description')
+    # output_df = pd.concat([output_df, description_tfidf_df], axis=1)
 
     # bert vecを結合
     # ref: https://colab.research.google.com/drive/1SEpFu6BuKnf-f7WrjBy3PiDCW4uyrB8O?authuser=3#scrollTo=n7RydsVa945l
@@ -739,9 +763,11 @@ def main():
     art = preprocessing_art(art)
 
     # テキストカラムから取得したword2vec特徴量
+    # TODO:
     more_title_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'more_title_swem_avg_df.pkl')
 
     # material情報のw2vベクトル
+    # TODO:
     material_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'material_w2v.pkl')
     collection_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'collection_w2v.pkl')
     technique_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'technique_w2v.pkl')
@@ -751,8 +777,11 @@ def main():
     material_collection_technique_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'material_collection_technique_w2v.pkl')
 
     # データをマージしてtrainとtestを生成する
-    df = merge_data(art, color, material, person, object_collection, production_place, technique, maker, principal_maker, principal_maker_occupation, more_title_w2v,
-                    material_w2v, collection_w2v, technique_w2v, material_collection_w2v, material_technique_w2v, collection_technique_w2v, material_collection_technique_w2v)
+    df = merge_data(art, color, material, person, object_collection, production_place, technique, maker,
+                    principal_maker, principal_maker_occupation, more_title_w2v,
+                    material_w2v, collection_w2v, technique_w2v, material_collection_w2v, material_technique_w2v,
+                    collection_technique_w2v, material_collection_technique_w2v
+    )
 
     # マージ後のデータで集約特徴量を生成
     df = agg_features(df)

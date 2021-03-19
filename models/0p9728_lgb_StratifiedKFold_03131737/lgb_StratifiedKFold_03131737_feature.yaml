@@ -110,57 +110,57 @@ FEATURES:
   - lifespan
   - long_title_lang_ft_count_enc
   - long_title_lang_ft_lbl_enc
-  - long_title_svd_0
-  - long_title_svd_1
-  - long_title_svd_10
-  - long_title_svd_11
-  - long_title_svd_12
-  - long_title_svd_13
-  - long_title_svd_14
-  - long_title_svd_15
-  - long_title_svd_16
-  - long_title_svd_17
-  - long_title_svd_18
-  - long_title_svd_19
-  - long_title_svd_2
-  - long_title_svd_20
-  - long_title_svd_21
-  - long_title_svd_22
-  - long_title_svd_23
-  - long_title_svd_24
-  - long_title_svd_25
-  - long_title_svd_26
-  - long_title_svd_27
-  - long_title_svd_28
-  - long_title_svd_29
-  - long_title_svd_3
-  - long_title_svd_30
-  - long_title_svd_31
-  - long_title_svd_32
-  - long_title_svd_33
-  - long_title_svd_34
-  - long_title_svd_35
-  - long_title_svd_36
-  - long_title_svd_37
-  - long_title_svd_38
-  - long_title_svd_39
-  - long_title_svd_4
-  - long_title_svd_40
-  - long_title_svd_41
-  - long_title_svd_42
-  - long_title_svd_43
-  - long_title_svd_44
-  - long_title_svd_45
-  - long_title_svd_46
-  - long_title_svd_47
-  - long_title_svd_48
-  - long_title_svd_49
-  - long_title_svd_5
-  - long_title_svd_6
-  - long_title_svd_7
-  - long_title_svd_8
-  - long_title_svd_9
-  - long_title_text_len
+  # - long_title_svd_0
+  # - long_title_svd_1
+  # - long_title_svd_10
+  # - long_title_svd_11
+  # - long_title_svd_12
+  # - long_title_svd_13
+  # - long_title_svd_14
+  # - long_title_svd_15
+  # - long_title_svd_16
+  # - long_title_svd_17
+  # - long_title_svd_18
+  # - long_title_svd_19
+  # - long_title_svd_2
+  # - long_title_svd_20
+  # - long_title_svd_21
+  # - long_title_svd_22
+  # - long_title_svd_23
+  # - long_title_svd_24
+  # - long_title_svd_25
+  # - long_title_svd_26
+  # - long_title_svd_27
+  # - long_title_svd_28
+  # - long_title_svd_29
+  # - long_title_svd_3
+  # - long_title_svd_30
+  # - long_title_svd_31
+  # - long_title_svd_32
+  # - long_title_svd_33
+  # - long_title_svd_34
+  # - long_title_svd_35
+  # - long_title_svd_36
+  # - long_title_svd_37
+  # - long_title_svd_38
+  # - long_title_svd_39
+  # - long_title_svd_4
+  # - long_title_svd_40
+  # - long_title_svd_41
+  # - long_title_svd_42
+  # - long_title_svd_43
+  # - long_title_svd_44
+  # - long_title_svd_45
+  # - long_title_svd_46
+  # - long_title_svd_47
+  # - long_title_svd_48
+  # - long_title_svd_49
+  # - long_title_svd_5
+  # - long_title_svd_6
+  # - long_title_svd_7
+  # - long_title_svd_8
+  # - long_title_svd_9
+  # - long_title_text_len
   - maker_name_0_lbl_enc
   - maker_name_1_lbl_enc
   - maker_name_by_object
