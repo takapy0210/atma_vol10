@@ -88,11 +88,6 @@ def aggregation(df, target_col, agg_target_col):
     df[f'{target_col_name}{agg_target_col}_std'] = gr.transform('std').astype('float16')
     df[f'{target_col_name}{agg_target_col}_median'] = gr.transform('median').astype('float16')
 
-    # 自身の値との差分
-    # df[f'{target_col_name}{agg_target_col}_mean_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_mean']
-    # df[f'{target_col_name}{agg_target_col}_max_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_max']
-    # df[f'{target_col_name}{agg_target_col}_min_diff'] = df[agg_target_col] - df[f'{target_col_name}{agg_target_col}_min']
-
     return df
 
 
@@ -104,7 +99,7 @@ def create_day_feature(df, col, prefix, change_utc2asia=False,
         df (pd.DataFrame): 日時特徴量を含むDF
         col (str)): 日時特徴量のカラム名
         prefix (str): 新しく生成するカラム名に付与するprefix
-        attrs (list of str): 生成する日付特徴量. Defaults to ['year', 'quarter', 'month', 'week', 'day', 'dayofweek', 'hour', 'minute']
+        attrs (list of str): 生成する日付特徴量. ['year', 'quarter', 'month', 'week', 'day', 'dayofweek', 'hour', 'minute']
                             cf. https://qiita.com/Takemura-T/items/79b16313e45576bb6492
 
     Returns:
@@ -146,7 +141,8 @@ def load_data():
 
 def hex_to_rgb(input_df, col):
     """hexコードを対応するRGBへ変換する"""
-    rbg_df = pd.DataFrame(input_df[col].str.strip().map(ImageColor.getrgb).values.tolist(), columns=['color_R', 'color_G', 'color_B'])
+    rbg_df = pd.DataFrame(input_df[col].str.strip().map(ImageColor.getrgb).values.tolist(),
+        columns=['color_R', 'color_G', 'color_B'])
     return pd.concat([input_df, rbg_df], axis=1)
 
 
@@ -170,7 +166,8 @@ def preprocessing_color(input_df):
 
     # percentageの分散（どのくらいの種類の色が平均的に使われているか）
     # これが小さいということは、多くの色が均等に使われている、ということになる
-    percentage_std_df = input_df.groupby('object_id')['percentage'].std().reset_index().rename(columns={'percentage': 'percentage_std'})
+    percentage_std_df = input_df.groupby('object_id')['percentage'].std().reset_index()\
+        .rename(columns={'percentage': 'percentage_std'})
     output_df = pd.merge(rgf_sum_df, percentage_std_df, how='left', on='object_id')
     return output_df
 
@@ -194,7 +191,8 @@ def get_cumcount_df(input_df, prefix, col):
 
     for i in range(max_size):
         temp_df = _df[_df['cumcount']==i].reset_index(drop=True)
-        output_df = output_df.merge(temp_df[['object_id', col]], on='object_id', how='left').rename(columns={col:f'{prefix}_{i}'})
+        output_df = output_df.merge(temp_df[['object_id', col]], on='object_id', how='left')\
+            .rename(columns={col:f'{prefix}_{i}'})
 
     # ラベルエンコーディング
     cols = [col for col in output_df.columns if col.startswith(f'{prefix}_')]
@@ -215,10 +213,12 @@ def preprocessing_material(input_df):
     # カウントエンコーディング
     count_df = category_encoder.count_encoder(input_df, ['material_name'])
     # object_idごとにどのくらいレアな材料を使っているか
-    rare_df = count_df.groupby('object_id')[['material_name_count_enc']].sum().reset_index().rename(columns={'material_name_count_enc': 'material_count_enc_sum'})
+    rare_df = count_df.groupby('object_id')[['material_name_count_enc']].sum().reset_index()\
+        .rename(columns={'material_name_count_enc': 'material_count_enc_sum'})
 
     # object_idごとにいくつの材料があるか
-    sum_df = input_df.groupby('object_id')[['material_name']].count().reset_index().rename(columns={'material_name': 'material_sum_by_object'})
+    sum_df = input_df.groupby('object_id')[['material_name']].count().reset_index()\
+        .rename(columns={'material_name': 'material_sum_by_object'})
     output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
 
     # 素材を横に並べたDFを取得
@@ -248,10 +248,12 @@ def preprocessing_object(input_df):
     # カウントエンコーディング
     count_df = category_encoder.count_encoder(input_df, ['object_name'])
     # object_idごとにどのくらいレアな材料を使っているか
-    rare_df = count_df.groupby('object_id')[['object_name_count_enc']].sum().reset_index().rename(columns={'object_name_count_enc': 'object_count_enc_sum'})
+    rare_df = count_df.groupby('object_id')[['object_name_count_enc']].sum().reset_index()\
+        .rename(columns={'object_name_count_enc': 'object_count_enc_sum'})
 
     # object_idごとにいくつの材料があるか
-    sum_df = input_df.groupby('object_id')[['object_name']].count().reset_index().rename(columns={'object_name': 'object_sum_by_object'})
+    sum_df = input_df.groupby('object_id')[['object_name']].count().reset_index()\
+        .rename(columns={'object_name': 'object_sum_by_object'})
     output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
 
     # 素材を横に並べたDFを取得
@@ -283,10 +285,12 @@ def preprocessing_person(input_df):
     # カウントエンコーディング
     count_df = category_encoder.count_encoder(input_df, ['person_name'])
     # object_idごとにどのくらいレアな材料を使っているか
-    rare_df = count_df.groupby('object_id')[['person_name_count_enc']].sum().reset_index().rename(columns={'person_name_count_enc': 'person_count_enc_sum'})
+    rare_df = count_df.groupby('object_id')[['person_name_count_enc']].sum().reset_index()\
+        .rename(columns={'person_name_count_enc': 'person_count_enc_sum'})
 
     # object_idごとにいくつの材料があるか
-    sum_df = input_df.groupby('object_id')[['person_name']].count().reset_index().rename(columns={'person_name': 'person_sum_by_object'})
+    sum_df = input_df.groupby('object_id')[['person_name']].count().reset_index()\
+        .rename(columns={'person_name': 'person_sum_by_object'})
     output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
 
     # 素材を横に並べたDFを取得
@@ -319,10 +323,12 @@ def preprocessing_production_place(input_df):
     # カウントエンコーディング
     count_df = category_encoder.count_encoder(input_df, ['production_place_name'])
     # object_idごとにどのくらいレアか
-    rare_df = count_df.groupby('object_id')[['production_place_name_count_enc']].sum().reset_index().rename(columns={'production_place_name_count_enc': 'production_place_count_enc_sum'})
+    rare_df = count_df.groupby('object_id')[['production_place_name_count_enc']].sum().reset_index()\
+        .rename(columns={'production_place_name_count_enc': 'production_place_count_enc_sum'})
 
     # object_idごとにいくつあるか
-    sum_df = input_df.groupby('object_id')[['production_place_name']].count().reset_index().rename(columns={'production_place_name': 'production_place_sum_by_object'})
+    sum_df = input_df.groupby('object_id')[['production_place_name']].count().reset_index()\
+        .rename(columns={'production_place_name': 'production_place_sum_by_object'})
     output_df = pd.merge(rare_df, sum_df, how='left', on='object_id')
 
     # 素材を横に並べたDFを取得
@@ -495,24 +501,6 @@ def preprocessing_principal_maker_occupation(input_df):
 
 
 @elapsed_time
-def get_text_features_svd(input_df, text_col):
-    """TF-IDF値を計算し、SVDで圧縮"""
-
-    # token_df = input_df[text_col].values.tolist()
-    # tfidf_vec = TfidfVectorizer().fit_transform(token_df)
-    # svd = TruncatedSVD(n_components=50, random_state=42)
-    # output_df = svd.fit_transform(tfidf_vec.toarray())
-    # output_df = pd.DataFrame(output_df).add_prefix(f'{text_col}_svd_')
-
-    # 外部ファイルから読み込み
-    text_df = pd.read_pickle(FEATURE_DIR_NAME + 'text_tfidf_svd50.pkl')
-    emb_cols = [col for col in text_df.columns if col.startswith(f'{text_col}_')]
-    output_df = text_df[emb_cols]
-
-    return output_df
-
-
-@elapsed_time
 def get_text_features(input_df):
     """テキスト特徴量を生成する"""
 
@@ -558,7 +546,7 @@ def get_text_features(input_df):
         output_df = pd.concat([output_df, tfidf_df], axis=1)
         # tfidf_df = text2vec.tfidf_vec(col=col, dim_size=50, decomposition='PCA')
         # output_df = pd.concat([output_df, tfidf_df], axis=1)
-        # tfidf_df = text2vec.tfidf_vec(col=col, dim_size=50, decomposition='UMAP')
+        # tfidf_df = text2vec.tfidf_vec(col=col, dim_size=10, decomposition='UMAP')
         # output_df = pd.concat([output_df, tfidf_df], axis=1)
         # tfidf_df = text2vec.tfidf_vec(col=col, dim_size=2, decomposition='TSNE')
         # output_df = pd.concat([output_df, tfidf_df], axis=1)
@@ -589,7 +577,6 @@ def preprocessing_art(input_df):
     # subtitleからサイズの情報を取得する
     output_df = get_size_from_subtitle(input_df)
 
-    # 日付特徴量
     # 製作期間
     output_df['production_period'] = output_df['dating_year_late'] - output_df['dating_year_early']
     # acquisition_date(収集日)から日付特徴量を取得
@@ -609,46 +596,6 @@ def preprocessing_art(input_df):
 
     output_df = get_text_features(output_df)
 
-    """
-    # 言語情報
-    fasttext_model = load_model(EXTERNAL_DIR_NAME + 'lid.176.bin')
-    output_df['title_lang_ft'] = output_df['title'].fillna('').map(lambda x: fasttext_model.predict(x.replace("\n", ""))[0][0])
-    output_df['description_lang_ft'] = output_df['description'].fillna('').map(lambda x: fasttext_model.predict(x.replace("\n", ""))[0][0])
-    output_df['long_title_lang_ft'] = output_df['long_title'].fillna('').map(lambda x: fasttext_model.predict(x.replace("\n", ""))[0][0])
-    output_df['more_title_lang_ft'] = output_df['more_title'].fillna('').map(lambda x: fasttext_model.predict(x.replace("\n", ""))[0][0])
-
-    # テキストカラムの特徴量生成
-    text_cols = [
-        'title',
-        'description',
-        'long_title',
-        'sub_title',
-        'more_title'
-    ]
-    # 文字列の長さ
-    for c in text_cols:
-        output_df[f'{c}_text_len'] = output_df[c].str.len()
-
-    # TF-IDFなどの特異値
-    output_df['title'] = output_df['title'].fillna('nan')
-    output_df['description'] = output_df['description'].fillna('nan')
-    output_df['long_title'] = output_df['long_title'].fillna('nan')
-    output_df['more_title'] = output_df['more_title'].fillna('nan')
-    title_tfidf_df = get_text_features_svd(output_df, 'title')
-    output_df = pd.concat([output_df, title_tfidf_df], axis=1)
-    description_tfidf_df = get_text_features_svd(output_df, 'description')
-    output_df = pd.concat([output_df, description_tfidf_df], axis=1)
-    title_tfidf_df = get_text_features_svd(output_df, 'long_title')
-    output_df = pd.concat([output_df, title_tfidf_df], axis=1)
-    description_tfidf_df = get_text_features_svd(output_df, 'more_title')
-    output_df = pd.concat([output_df, description_tfidf_df], axis=1)
-
-    # title_tfidf_df = get_text_features_umap(output_df, 'title')
-    # output_df = pd.concat([output_df, title_tfidf_df], axis=1)
-    # description_tfidf_df = get_text_features_umap(output_df, 'description')
-    # output_df = pd.concat([output_df, description_tfidf_df], axis=1)
-    """
-
     # bert vecを結合
     # ref: https://colab.research.google.com/drive/1SEpFu6BuKnf-f7WrjBy3PiDCW4uyrB8O?authuser=3#scrollTo=n7RydsVa945l
     # title_bert_vev = pd.read_pickle(FEATURE_DIR_NAME + 'title_bert_vec.pkl')  # title
@@ -660,7 +607,7 @@ def preprocessing_art(input_df):
     num_cols = feature_engineering.get_num_col(output_df)
     cat_cols = ['title', 'title_lang_ft', 'description_lang_ft', 'long_title_lang_ft', 'more_title_lang_ft',
                 'principal_maker', 'principal_or_first_maker', 'copyright_holder',
-                'acquisition_method', 'acquisition_credit_line']  # ラベルエンコードするカテゴリカラム
+                'acquisition_method', 'acquisition_credit_line']  # ラベルエンコードするカテゴリ
 
     output_df = output_df[['object_id'] + num_cols + cat_cols]
 
@@ -690,7 +637,7 @@ def merge_data(art, color, material, person, object_collection, production_place
     # outout_df = pd.merge(outout_df, material_collection_w2v, how='left', on='object_id')
     # outout_df = pd.merge(outout_df, material_technique_w2v, how='left', on='object_id')
     # outout_df = pd.merge(outout_df, collection_technique_w2v, how='left', on='object_id')
-    # outout_df = pd.merge(outout_df, material_collection_technique_w2v, how='left', on='object_id')
+    outout_df = pd.merge(outout_df, material_collection_technique_w2v, how='left', on='object_id')
     return outout_df
 
 
@@ -701,21 +648,18 @@ def agg_features(input_df):
     output_df = aggregation(input_df, ['century'], 'description_length')
     output_df = aggregation(input_df, ['century'], 'long_title_length')
     output_df = aggregation(input_df, ['century'], 'more_title_length')
-    # output_df = aggregation(input_df, ['century'], 'sub_title_length')
     output_df = aggregation(input_df, ['century'], 'title_length')
     output_df = aggregation(input_df, ['century'], 'material_count_enc_sum')
 
     output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'description_length')
     output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'long_title_length')
     output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'more_title_length')
-    # output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'sub_title_length')
     output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'title_length')
     output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'material_count_enc_sum')
 
     output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'description_length')
     output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'long_title_length')
     output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'more_title_length')
-    # output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'sub_title_length')
     output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'title_length')
     output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'material_count_enc_sum')
 
@@ -744,12 +688,11 @@ def agg_features(input_df):
     # output_df = aggregation(input_df, ['maker_name_0_lbl_enc'], 'material_count_enc_sum')
 
     # NG CVは上がったけどLBはあがらず
-    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'description_text_len')
-    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'long_title_text_len')
-    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'more_title_text_len')
-    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'sub_title_text_len')
-    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'title_text_len')
-    # output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'material_count_enc_sum')
+    output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'description_length')
+    output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'long_title_length')
+    output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'more_title_length')
+    output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'title_length')
+    output_df = aggregation(input_df, ['principal_or_first_maker_lbl_enc'], 'material_count_enc_sum')
 
     return output_df
 
@@ -825,11 +768,12 @@ def main():
     art = preprocessing_art(art)
 
     # テキストカラムから取得したword2vec特徴量
-    # TODO:
+    # atmaCup_vol10/notebooks/004_word2vecで分散表現を計算.ipynb
+    # atmaCup_vol10/notebooks/005_more_titleのswem特徴量.ipynb
     more_title_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'more_title_swem_avg_df.pkl')
 
     # material情報のw2vベクトル
-    # TODO:
+    # atmaCup_vol10/notebooks/006_materialから埋め込みを計算する.ipynb
     material_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'material_w2v.pkl')
     collection_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'collection_w2v.pkl')
     technique_w2v = pd.read_pickle(FEATURE_DIR_NAME + 'technique_w2v.pkl')

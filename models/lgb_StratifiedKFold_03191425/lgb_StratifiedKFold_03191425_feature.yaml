@@ -52,6 +52,56 @@ FEATURES:
   - description_lang_ft_count_enc
   - description_lang_ft_lbl_enc
   - description_length
+  - description_pca_0
+  - description_pca_1
+  - description_pca_10
+  - description_pca_11
+  - description_pca_12
+  - description_pca_13
+  - description_pca_14
+  - description_pca_15
+  - description_pca_16
+  - description_pca_17
+  - description_pca_18
+  - description_pca_19
+  - description_pca_2
+  - description_pca_20
+  - description_pca_21
+  - description_pca_22
+  - description_pca_23
+  - description_pca_24
+  - description_pca_25
+  - description_pca_26
+  - description_pca_27
+  - description_pca_28
+  - description_pca_29
+  - description_pca_3
+  - description_pca_30
+  - description_pca_31
+  - description_pca_32
+  - description_pca_33
+  - description_pca_34
+  - description_pca_35
+  - description_pca_36
+  - description_pca_37
+  - description_pca_38
+  - description_pca_39
+  - description_pca_4
+  - description_pca_40
+  - description_pca_41
+  - description_pca_42
+  - description_pca_43
+  - description_pca_44
+  - description_pca_45
+  - description_pca_46
+  - description_pca_47
+  - description_pca_48
+  - description_pca_49
+  - description_pca_5
+  - description_pca_6
+  - description_pca_7
+  - description_pca_8
+  - description_pca_9
   - description_svd_0
   - description_svd_1
   - description_svd_10
@@ -107,6 +157,56 @@ FEATURES:
   - long_title_lang_ft_count_enc
   - long_title_lang_ft_lbl_enc
   - long_title_length
+  - long_title_pca_0
+  - long_title_pca_1
+  - long_title_pca_10
+  - long_title_pca_11
+  - long_title_pca_12
+  - long_title_pca_13
+  - long_title_pca_14
+  - long_title_pca_15
+  - long_title_pca_16
+  - long_title_pca_17
+  - long_title_pca_18
+  - long_title_pca_19
+  - long_title_pca_2
+  - long_title_pca_20
+  - long_title_pca_21
+  - long_title_pca_22
+  - long_title_pca_23
+  - long_title_pca_24
+  - long_title_pca_25
+  - long_title_pca_26
+  - long_title_pca_27
+  - long_title_pca_28
+  - long_title_pca_29
+  - long_title_pca_3
+  - long_title_pca_30
+  - long_title_pca_31
+  - long_title_pca_32
+  - long_title_pca_33
+  - long_title_pca_34
+  - long_title_pca_35
+  - long_title_pca_36
+  - long_title_pca_37
+  - long_title_pca_38
+  - long_title_pca_39
+  - long_title_pca_4
+  - long_title_pca_40
+  - long_title_pca_41
+  - long_title_pca_42
+  - long_title_pca_43
+  - long_title_pca_44
+  - long_title_pca_45
+  - long_title_pca_46
+  - long_title_pca_47
+  - long_title_pca_48
+  - long_title_pca_49
+  - long_title_pca_5
+  - long_title_pca_6
+  - long_title_pca_7
+  - long_title_pca_8
+  - long_title_pca_9
   - long_title_svd_0
   - long_title_svd_1
   - long_title_svd_10
@@ -170,31 +270,6 @@ FEATURES:
   - material_5_lbl_enc
   - material_6_lbl_enc
   - material_7_lbl_enc
-  - material_collection_technique_w2v_0
-  - material_collection_technique_w2v_1
-  - material_collection_technique_w2v_10
-  - material_collection_technique_w2v_11
-  - material_collection_technique_w2v_12
-  - material_collection_technique_w2v_13
-  - material_collection_technique_w2v_14
-  - material_collection_technique_w2v_15
-  - material_collection_technique_w2v_16
-  - material_collection_technique_w2v_17
-  - material_collection_technique_w2v_18
-  - material_collection_technique_w2v_19
-  - material_collection_technique_w2v_2
-  - material_collection_technique_w2v_20
-  - material_collection_technique_w2v_21
-  - material_collection_technique_w2v_22
-  - material_collection_technique_w2v_23
-  - material_collection_technique_w2v_24
-  - material_collection_technique_w2v_3
-  - material_collection_technique_w2v_4
-  - material_collection_technique_w2v_5
-  - material_collection_technique_w2v_6
-  - material_collection_technique_w2v_7
-  - material_collection_technique_w2v_8
-  - material_collection_technique_w2v_9
   - material_count_enc_sum
   - material_name_RC paper
   - material_name_baryta paper
@@ -227,6 +302,56 @@ FEATURES:
   - more_title_lang_ft_count_enc
   - more_title_lang_ft_lbl_enc
   - more_title_length
+  - more_title_pca_0
+  - more_title_pca_1
+  - more_title_pca_10
+  - more_title_pca_11
+  - more_title_pca_12
+  - more_title_pca_13
+  - more_title_pca_14
+  - more_title_pca_15
+  - more_title_pca_16
+  - more_title_pca_17
+  - more_title_pca_18
+  - more_title_pca_19
+  - more_title_pca_2
+  - more_title_pca_20
+  - more_title_pca_21
+  - more_title_pca_22
+  - more_title_pca_23
+  - more_title_pca_24
+  - more_title_pca_25
+  - more_title_pca_26
+  - more_title_pca_27
+  - more_title_pca_28
+  - more_title_pca_29
+  - more_title_pca_3
+  - more_title_pca_30
+  - more_title_pca_31
+  - more_title_pca_32
+  - more_title_pca_33
+  - more_title_pca_34
+  - more_title_pca_35
+  - more_title_pca_36
+  - more_title_pca_37
+  - more_title_pca_38
+  - more_title_pca_39
+  - more_title_pca_4
+  - more_title_pca_40
+  - more_title_pca_41
+  - more_title_pca_42
+  - more_title_pca_43
+  - more_title_pca_44
+  - more_title_pca_45
+  - more_title_pca_46
+  - more_title_pca_47
+  - more_title_pca_48
+  - more_title_pca_49
+  - more_title_pca_5
+  - more_title_pca_6
+  - more_title_pca_7
+  - more_title_pca_8
+  - more_title_pca_9
   - more_title_svd_0
   - more_title_svd_1
   - more_title_svd_10
@@ -350,31 +475,6 @@ FEATURES:
   - principal_maker_lbl_enc_title_length_std
   - principal_or_first_maker_count_enc
   - principal_or_first_maker_lbl_enc
-  - principal_or_first_maker_lbl_enc_description_length_max
-  - principal_or_first_maker_lbl_enc_description_length_mean
-  - principal_or_first_maker_lbl_enc_description_length_median
-  - principal_or_first_maker_lbl_enc_description_length_min
-  - principal_or_first_maker_lbl_enc_description_length_std
-  - principal_or_first_maker_lbl_enc_long_title_length_max
-  - principal_or_first_maker_lbl_enc_long_title_length_mean
-  - principal_or_first_maker_lbl_enc_long_title_length_median
-  - principal_or_first_maker_lbl_enc_long_title_length_min
-  - principal_or_first_maker_lbl_enc_long_title_length_std
-  - principal_or_first_maker_lbl_enc_material_count_enc_sum_max
-  - principal_or_first_maker_lbl_enc_material_count_enc_sum_mean
-  - principal_or_first_maker_lbl_enc_material_count_enc_sum_median
-  - principal_or_first_maker_lbl_enc_material_count_enc_sum_min
-  - principal_or_first_maker_lbl_enc_material_count_enc_sum_std
-  - principal_or_first_maker_lbl_enc_more_title_length_max
-  - principal_or_first_maker_lbl_enc_more_title_length_mean
-  - principal_or_first_maker_lbl_enc_more_title_length_median
-  - principal_or_first_maker_lbl_enc_more_title_length_min
-  - principal_or_first_maker_lbl_enc_more_title_length_std
-  - principal_or_first_maker_lbl_enc_title_length_max
-  - principal_or_first_maker_lbl_enc_title_length_mean
-  - principal_or_first_maker_lbl_enc_title_length_median
-  - principal_or_first_maker_lbl_enc_title_length_min
-  - principal_or_first_maker_lbl_enc_title_length_std
   - productionPlaces_0_lbl_enc
   - productionPlaces_1_lbl_enc
   - productionPlaces_by_object
@@ -490,6 +590,56 @@ FEATURES:
   - title_lang_ft_lbl_enc_title_length_std
   - title_lbl_enc
   - title_length
+  - title_pca_0
+  - title_pca_1
+  - title_pca_10
+  - title_pca_11
+  - title_pca_12
+  - title_pca_13
+  - title_pca_14
+  - title_pca_15
+  - title_pca_16
+  - title_pca_17
+  - title_pca_18
+  - title_pca_19
+  - title_pca_2
+  - title_pca_20
+  - title_pca_21
+  - title_pca_22
+  - title_pca_23
+  - title_pca_24
+  - title_pca_25
+  - title_pca_26
+  - title_pca_27
+  - title_pca_28
+  - title_pca_29
+  - title_pca_3
+  - title_pca_30
+  - title_pca_31
+  - title_pca_32
+  - title_pca_33
+  - title_pca_34
+  - title_pca_35
+  - title_pca_36
+  - title_pca_37
+  - title_pca_38
+  - title_pca_39
+  - title_pca_4
+  - title_pca_40
+  - title_pca_41
+  - title_pca_42
+  - title_pca_43
+  - title_pca_44
+  - title_pca_45
+  - title_pca_46
+  - title_pca_47
+  - title_pca_48
+  - title_pca_49
+  - title_pca_5
+  - title_pca_6
+  - title_pca_7
+  - title_pca_8
+  - title_pca_9
   - title_svd_0
   - title_svd_1
   - title_svd_10
