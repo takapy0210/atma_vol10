@@ -102,26 +102,6 @@ FEATURES:
   - description_svd_7
   - description_svd_8
   - description_svd_9
-  - description_topic_0
-  - description_topic_1
-  - description_topic_10
-  - description_topic_11
-  - description_topic_12
-  - description_topic_13
-  - description_topic_14
-  - description_topic_15
-  - description_topic_16
-  - description_topic_17
-  - description_topic_18
-  - description_topic_19
-  - description_topic_2
-  - description_topic_3
-  - description_topic_4
-  - description_topic_5
-  - description_topic_6
-  - description_topic_7
-  - description_topic_8
-  - description_topic_9
   - description_word_count
   - lifespan
   - long_title_lang_ft_count_enc
@@ -177,26 +157,6 @@ FEATURES:
   - long_title_svd_7
   - long_title_svd_8
   - long_title_svd_9
-  - long_title_topic_0
-  - long_title_topic_1
-  - long_title_topic_10
-  - long_title_topic_11
-  - long_title_topic_12
-  - long_title_topic_13
-  - long_title_topic_14
-  - long_title_topic_15
-  - long_title_topic_16
-  - long_title_topic_17
-  - long_title_topic_18
-  - long_title_topic_19
-  - long_title_topic_2
-  - long_title_topic_3
-  - long_title_topic_4
-  - long_title_topic_5
-  - long_title_topic_6
-  - long_title_topic_7
-  - long_title_topic_8
-  - long_title_topic_9
   - long_title_word_count
   - maker_name_0_lbl_enc
   - maker_name_1_lbl_enc
@@ -210,31 +170,6 @@ FEATURES:
   - material_5_lbl_enc
   - material_6_lbl_enc
   - material_7_lbl_enc
-  - material_collection_technique_w2v_0
-  - material_collection_technique_w2v_1
-  - material_collection_technique_w2v_10
-  - material_collection_technique_w2v_11
-  - material_collection_technique_w2v_12
-  - material_collection_technique_w2v_13
-  - material_collection_technique_w2v_14
-  - material_collection_technique_w2v_15
-  - material_collection_technique_w2v_16
-  - material_collection_technique_w2v_17
-  - material_collection_technique_w2v_18
-  - material_collection_technique_w2v_19
-  - material_collection_technique_w2v_2
-  - material_collection_technique_w2v_20
-  - material_collection_technique_w2v_21
-  - material_collection_technique_w2v_22
-  - material_collection_technique_w2v_23
-  - material_collection_technique_w2v_24
-  - material_collection_technique_w2v_3
-  - material_collection_technique_w2v_4
-  - material_collection_technique_w2v_5
-  - material_collection_technique_w2v_6
-  - material_collection_technique_w2v_7
-  - material_collection_technique_w2v_8
-  - material_collection_technique_w2v_9
   - material_count_enc_sum
   - material_name_RC paper
   - material_name_baryta paper
@@ -264,6 +199,26 @@ FEATURES:
   - material_name_watercolor (paint)
   - material_name_wood (plant material)
   - material_sum_by_object
+  - material_w2v_0
+  - material_w2v_1
+  - material_w2v_10
+  - material_w2v_11
+  - material_w2v_12
+  - material_w2v_13
+  - material_w2v_14
+  - material_w2v_15
+  - material_w2v_16
+  - material_w2v_17
+  - material_w2v_18
+  - material_w2v_19
+  - material_w2v_2
+  - material_w2v_3
+  - material_w2v_4
+  - material_w2v_5
+  - material_w2v_6
+  - material_w2v_7
+  - material_w2v_8
+  - material_w2v_9
   - more_title_lang_ft_count_enc
   - more_title_lang_ft_lbl_enc
   - more_title_length
@@ -317,26 +272,6 @@ FEATURES:
   - more_title_svd_7
   - more_title_svd_8
   - more_title_svd_9
-  - more_title_topic_0
-  - more_title_topic_1
-  - more_title_topic_10
-  - more_title_topic_11
-  - more_title_topic_12
-  - more_title_topic_13
-  - more_title_topic_14
-  - more_title_topic_15
-  - more_title_topic_16
-  - more_title_topic_17
-  - more_title_topic_18
-  - more_title_topic_19
-  - more_title_topic_2
-  - more_title_topic_3
-  - more_title_topic_4
-  - more_title_topic_5
-  - more_title_topic_6
-  - more_title_topic_7
-  - more_title_topic_8
-  - more_title_topic_9
   - more_title_word_count
   - nationality_lbl_enc
   - object_collection_0_lbl_enc
@@ -410,31 +345,6 @@ FEATURES:
   - principal_maker_lbl_enc_title_length_std
   - principal_or_first_maker_count_enc
   - principal_or_first_maker_lbl_enc
-  - principal_or_first_maker_lbl_enc_description_length_max
-  - principal_or_first_maker_lbl_enc_description_length_mean
-  - principal_or_first_maker_lbl_enc_description_length_median
-  - principal_or_first_maker_lbl_enc_description_length_min
-  - principal_or_first_maker_lbl_enc_description_length_std
-  - principal_or_first_maker_lbl_enc_long_title_length_max
-  - principal_or_first_maker_lbl_enc_long_title_length_mean
-  - principal_or_first_maker_lbl_enc_long_title_length_median
-  - principal_or_first_maker_lbl_enc_long_title_length_min
-  - principal_or_first_maker_lbl_enc_long_title_length_std
-  - principal_or_first_maker_lbl_enc_material_count_enc_sum_max
-  - principal_or_first_maker_lbl_enc_material_count_enc_sum_mean
-  - principal_or_first_maker_lbl_enc_material_count_enc_sum_median
-  - principal_or_first_maker_lbl_enc_material_count_enc_sum_min
-  - principal_or_first_maker_lbl_enc_material_count_enc_sum_std
-  - principal_or_first_maker_lbl_enc_more_title_length_max
-  - principal_or_first_maker_lbl_enc_more_title_length_mean
-  - principal_or_first_maker_lbl_enc_more_title_length_median
-  - principal_or_first_maker_lbl_enc_more_title_length_min
-  - principal_or_first_maker_lbl_enc_more_title_length_std
-  - principal_or_first_maker_lbl_enc_title_length_max
-  - principal_or_first_maker_lbl_enc_title_length_mean
-  - principal_or_first_maker_lbl_enc_title_length_median
-  - principal_or_first_maker_lbl_enc_title_length_min
-  - principal_or_first_maker_lbl_enc_title_length_std
   - productionPlaces_0_lbl_enc
   - productionPlaces_1_lbl_enc
   - productionPlaces_by_object
@@ -600,24 +510,4 @@ FEATURES:
   - title_svd_7
   - title_svd_8
   - title_svd_9
-  - title_topic_0
-  - title_topic_1
-  - title_topic_10
-  - title_topic_11
-  - title_topic_12
-  - title_topic_13
-  - title_topic_14
-  - title_topic_15
-  - title_topic_16
-  - title_topic_17
-  - title_topic_18
-  - title_topic_19
-  - title_topic_2
-  - title_topic_3
-  - title_topic_4
-  - title_topic_5
-  - title_topic_6
-  - title_topic_7
-  - title_topic_8
-  - title_topic_9
   - title_word_count
