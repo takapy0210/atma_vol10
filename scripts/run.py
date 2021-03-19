@@ -1,9 +1,10 @@
 """学習スクリプト
     実行コマンド
-        docker exec -it 773d1c8788c8 /bin/bash -c "cd ./atmaCup_vol10/scripts && python3 run.py"
+        $ docker exec -it 773d1c8788c8 /bin/bash -c "cd ./atmaCup_vol10/scripts && python3 run.py"
 
     MLFlow起動コマンド
-
+        $ cd working/python/competition/mlflow
+        $ mlflow ui
 
 """
 
@@ -200,7 +201,7 @@ def main(model_type='lgb') -> str:
     try:
         # インスタンス生成
         runner = Runner(run_name, model_cls, features, setting, model_params, cv, category_col,
-                        is_add_pseudo=False, pseudo_label_file='pseudo_lb_0p9807.pkl')
+                        is_add_pseudo=False, pseudo_label_file='pseudo_lb_last.pkl')
         use_feature_name = runner.get_feature_name()  # 今回の学習で使用する特徴量名を取得
 
         # モデルのconfigをjsonで保存

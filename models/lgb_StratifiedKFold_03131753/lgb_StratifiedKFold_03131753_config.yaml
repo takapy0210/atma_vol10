@@ -1,0 +1,64 @@
+SETTING:
+  MODEL_DIR_NAME: '../models/' # 学習結果の諸々を保存するディレクトリ
+  SUB_DIR_NAME: '../data/submission/' # 提出ファイル出力先ディレクトリ
+  RAW_DATA_DIR_NAME: '../data/raw/' # オリジナルデータの格納先ディレクトリ
+  FEATURE_DIR_NAME: '../data/features/' # 生成した特徴量格納ディレクトリ
+  EXTERNAL_DIR_NAME: '../data/external/' # 外部データディレクトリ
+  TRAIN_FILE_NAME: 'train.pkl' # 学習に使用するtrainファイル名
+  TEST_FILE_NAME: 'test.pkl' # 予測対象のtestファイル名
+  SLACK_NOTIFY: False
+  EXPERIMENT_NAME: 'atma_vol10'
+  TRACKING_DIR: '/opt/program/mlflow/mlruns'
+  TARGET_COL: 'likes' # 目的変数のカラム名
+  METRICS: 'RMSLE' # 評価指標 [MSE / RMSE / RMSLE / MAE / ACC / CUSTOM]が使用可能
+  CALC_SHAP: False # SHAPでの重要度を計算するか否か[True or False]
+  SAVE_TRAIN_PRED: True # 学習データでの推論結果を保存するか否か[True or False]
+  CV:
+    method: 'StratifiedKFold' # [KFold, StratifiedKFold ,GroupKFold, StratifiedGroupKFold, CustomTimeSeriesSplitter, TrainTestSplit]から選択可能
+    n_splits: 10 # k数
+    random_state: 42 # seed
+    shuffle: True # データをシャッフルするか否か
+    cv_target_gr: 'century' # GroupKFold or StratifiedGroupKFold の場合に対象とするカラム名を設定
+    cv_target_sf: 'likes_log_int' # StratifiedKFold or StratifiedGroupKFold の場合に対象とするカラム名を設定
+
+MODEL_LGB:
+  # https://lightgbm.readthedocs.io/en/latest/Parameters.html#parameters
+  PARAM:
+    objective: 'regression'
+    metric: 'rmse'
+    boosting: 'gbdt'
+    learning_rate: 0.05
+    max_depth: -1
+    # lambda_l1: 0.019918875912078603
+    # lambda_l2: 0.002616688073257713
+    num_leaves: 32
+    # feature_fraction: 0.6641013611124621
+    bagging_fraction: 0.7
+    bagging_freq: 1
+    # min_child_samples: 5
+    verbose: -1
+    num_round: 10000
+    early_stopping_rounds: 200
+    verbose_eval: 200
+    bagging_seed: 42
+    feature_fraction_seed: 42
+    drop_seed: 42
+    seed: 42
+
+MODEL_CB:
+  PARAM:
+    loss_function: 'RMSE'
+    eval_metric: 'RMSE'
+    learning_rate: 0.05
+    iterations: 5000
+    early_stopping_rounds: 200
+    random_seed: 42
+    verbose_eval: 200
+    depth: 6
+    pred_type: 'Regressor' # [Regressor / Classifier]
+
+MODEL_XGB:
+  PARAM:
+
+MODEL_NN:
+  PARAM:
