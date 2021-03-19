@@ -3,6 +3,8 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD, PCA
 from sklearn.manifold import TSNE
+import multiprocessing
+import gensim
 
 
 class Text2Vec(object):
@@ -115,5 +117,35 @@ class Text2Vec(object):
             tsne = TSNE(n_components=dim_size, random_state=self.seed)
             tsne_df = tsne.fit_transform(tfidf_vec)
             output_df = pd.DataFrame(tsne_df).add_prefix(f'{col}_tsne_')
+
+        return output_df
+
+    def lda_vec(self, col: str, topic_size: int = 20, passes: int = 10):
+        # 辞書の作成
+        texts = self.df[col].apply(lambda x: x.split())
+        dic = gensim.corpora.Dictionary(texts)
+        bow_corpus = [dic.doc2bow(doc) for doc in texts]
+
+        # CPUのコア数を取得する
+        cpu_count = multiprocessing.cpu_count()
+        ldamodel = gensim.models.LdaMulticore(
+            bow_corpus,
+            num_topics=topic_size,
+            id2word=dic,
+            workers=cpu_count,
+            passes=passes,
+            random_state=self.seed
+        )
+
+        # 全文書のトピック分布を取得
+        all_topics = ldamodel.get_document_topics(bow_corpus, minimum_probability=0)
+        temp_dict = {}
+        for i, t in enumerate(all_topics):
+            weight = [x[1] for x in t]  # タプル重みだけを取り出したリストを作成
+            temp_dict[i] = weight
+
+        # DFに変換
+        output_df = pd.DataFrame.from_dict(temp_dict, orient='index')
+        output_df = output_df.add_prefix(f'{col}_topic_')
 
         return output_df

@@ -550,6 +550,8 @@ def get_text_features(input_df):
         # output_df = pd.concat([output_df, tfidf_df], axis=1)
         # tfidf_df = text2vec.tfidf_vec(col=col, dim_size=2, decomposition='TSNE')
         # output_df = pd.concat([output_df, tfidf_df], axis=1)
+        # topic_df = text2vec.lda_vec(col=col, topic_size=20)
+        # output_df = pd.concat([output_df, topic_df], axis=1)
 
     return output_df
 
@@ -594,6 +596,7 @@ def preprocessing_art(input_df):
     )
     output_df['century'] = century.values.astype(np.int8)
 
+    # テキスト特徴量
     output_df = get_text_features(output_df)
 
     # bert vecを結合
