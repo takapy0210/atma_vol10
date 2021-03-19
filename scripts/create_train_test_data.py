@@ -17,11 +17,12 @@ import yaml
 from PIL import ImageColor
 from tqdm import tqdm as tqdm
 from fasttext import load_model
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.decomposition import TruncatedSVD
+import texthero as hero
+import nltk
 
 from takaggle.feature import category_encoder, feature_engineering
 from takaggle.training.util import Logger
+from create_text_feature import Text2Vec
 
 tqdm.pandas()
 warnings.filterwarnings("ignore")
@@ -511,8 +512,58 @@ def get_text_features_svd(input_df, text_col):
     return output_df
 
 
-# @elapsed_time
-# def get_text_features_umap(input_df, text_col):
+@elapsed_time
+def get_text_features(input_df):
+    """テキスト特徴量を生成する"""
+
+    def text_preprocess(input_df, col):
+        # 英語とオランダ語を stopword として指定
+        custom_stopwords = nltk.corpus.stopwords.words('dutch') + nltk.corpus.stopwords.words('english')
+        apply_stopword_text = hero.clean(input_df[col], pipeline=[
+            hero.preprocessing.fillna,
+            hero.preprocessing.lowercase,
+            hero.preprocessing.remove_digits,
+            hero.preprocessing.remove_punctuation,
+            hero.preprocessing.remove_diacritics,
+            lambda x: hero.preprocessing.remove_stopwords(x, stopwords=custom_stopwords)
+        ])
+        ouput_df = pd.DataFrame(apply_stopword_text)
+        return ouput_df
+
+    text_cols = [
+        'title',
+        'description',
+        'long_title',
+        # 'sub_title',
+        'more_title'
+    ]
+
+    model = load_model(EXTERNAL_DIR_NAME + 'lid.176.bin')
+    clean_text_df = pd.DataFrame()
+    output_df = input_df.copy()
+
+    # 前処理
+    for col in tqdm(text_cols):
+        text_df = text_preprocess(input_df, col)
+        clean_text_df = pd.concat([clean_text_df, text_df], axis=1)
+
+    # 特徴量生成
+    text2vec = Text2Vec(input_df=clean_text_df, seed=42)
+    for col in tqdm(text_cols):
+        language_df = text2vec.language_type(col=col, fasttext_model=model)
+        output_df = pd.concat([output_df, language_df], axis=1)
+        length_df = text2vec.text_length(col=col)
+        output_df = pd.concat([output_df, length_df], axis=1)
+        tfidf_df = text2vec.tfidf_vec(col=col, dim_size=50, decomposition='SVD')
+        output_df = pd.concat([output_df, tfidf_df], axis=1)
+        # tfidf_df = text2vec.tfidf_vec(col=col, dim_size=50, decomposition='PCA')
+        # output_df = pd.concat([output_df, tfidf_df], axis=1)
+        # tfidf_df = text2vec.tfidf_vec(col=col, dim_size=50, decomposition='UMAP')
+        # output_df = pd.concat([output_df, tfidf_df], axis=1)
+        # tfidf_df = text2vec.tfidf_vec(col=col, dim_size=2, decomposition='TSNE')
+        # output_df = pd.concat([output_df, tfidf_df], axis=1)
+
+    return output_df
 
 
 @elapsed_time
@@ -526,8 +577,10 @@ def preprocessing_art(input_df):
             column_name = f'size_{axis}'
             size_info = output_df['sub_title'].str.extract(r'{} (\d*|\d*\.\d*)(cm|mm)'.format(axis))  # 正規表現を使ってサイズを抽出
             size_info = size_info.rename(columns={0: column_name, 1: 'unit'})
-            size_info[column_name] = size_info[column_name].replace('', np.nan).astype(float)  # dtypeがobjectになってるのでfloatに直す
-            size_info[column_name] = size_info.apply(lambda row: row[column_name] * 10 if row['unit'] == 'cm' else row[column_name], axis=1) # 　単位をmmに統一する
+            # dtypeがobjectになってるのでfloatに直す
+            size_info[column_name] = size_info[column_name].replace('', np.nan).astype(float)
+            size_info[column_name] = size_info.apply(lambda row: row[column_name] * 10
+                                                     if row['unit'] == 'cm' else row[column_name], axis=1)  # 単位をmmに統一する
             output_df[column_name] = size_info[column_name]
         return output_df
 
@@ -543,8 +596,10 @@ def preprocessing_art(input_df):
     output_df = create_day_feature(output_df, col='acquisition_date', prefix='acquisition', attrs=['year', 'month', 'day', 'dayofweek'])
     # 製作期間が終わってから収集されるまでの期間
     output_df['acquisition_period'] = output_df['acquisition_year'] - output_df['dating_year_late']
+    # 欠損は平均で補完
+    output_df['dating_sorting_date'] = output_df['dating_sorting_date'].fillna(output_df['dating_sorting_date'].mean())
+
     # dating_sorting_dateをbin分割する
-    output_df['dating_sorting_date'] = output_df['dating_sorting_date'].fillna(output_df['dating_sorting_date'].mean())  # とりあえず平均で埋める
     century = pd.cut(
         output_df['dating_sorting_date'],
         [-float('inf'), 1499, 1549, 1599, 1649, 1699, 1749, 1799, 1849, 1899, float('inf')],
@@ -552,6 +607,9 @@ def preprocessing_art(input_df):
     )
     output_df['century'] = century.values.astype(np.int8)
 
+    output_df = get_text_features(output_df)
+
+    """
     # 言語情報
     fasttext_model = load_model(EXTERNAL_DIR_NAME + 'lid.176.bin')
     output_df['title_lang_ft'] = output_df['title'].fillna('').map(lambda x: fasttext_model.predict(x.replace("\n", ""))[0][0])
@@ -589,6 +647,7 @@ def preprocessing_art(input_df):
     # output_df = pd.concat([output_df, title_tfidf_df], axis=1)
     # description_tfidf_df = get_text_features_umap(output_df, 'description')
     # output_df = pd.concat([output_df, description_tfidf_df], axis=1)
+    """
 
     # bert vecを結合
     # ref: https://colab.research.google.com/drive/1SEpFu6BuKnf-f7WrjBy3PiDCW4uyrB8O?authuser=3#scrollTo=n7RydsVa945l
@@ -639,25 +698,25 @@ def merge_data(art, color, material, person, object_collection, production_place
 def agg_features(input_df):
     """集計特徴量を生成する"""
 
-    output_df = aggregation(input_df, ['century'], 'description_text_len')
-    output_df = aggregation(input_df, ['century'], 'long_title_text_len')
-    output_df = aggregation(input_df, ['century'], 'more_title_text_len')
-    output_df = aggregation(input_df, ['century'], 'sub_title_text_len')
-    output_df = aggregation(input_df, ['century'], 'title_text_len')
+    output_df = aggregation(input_df, ['century'], 'description_length')
+    output_df = aggregation(input_df, ['century'], 'long_title_length')
+    output_df = aggregation(input_df, ['century'], 'more_title_length')
+    # output_df = aggregation(input_df, ['century'], 'sub_title_length')
+    output_df = aggregation(input_df, ['century'], 'title_length')
     output_df = aggregation(input_df, ['century'], 'material_count_enc_sum')
 
-    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'description_text_len')
-    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'long_title_text_len')
-    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'more_title_text_len')
-    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'sub_title_text_len')
-    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'title_text_len')
+    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'description_length')
+    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'long_title_length')
+    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'more_title_length')
+    # output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'sub_title_length')
+    output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'title_length')
     output_df = aggregation(input_df, ['title_lang_ft_lbl_enc'], 'material_count_enc_sum')
 
-    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'description_text_len')
-    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'long_title_text_len')
-    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'more_title_text_len')
-    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'sub_title_text_len')
-    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'title_text_len')
+    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'description_length')
+    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'long_title_length')
+    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'more_title_length')
+    # output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'sub_title_length')
+    output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'title_length')
     output_df = aggregation(input_df, ['principal_maker_lbl_enc'], 'material_count_enc_sum')
 
     # NG CVさがった
@@ -751,12 +810,15 @@ def main():
     material = preprocessing_material(dfs['material'].rename(columns={'name': 'material_name'}))
     person = preprocessing_person(dfs['historical_person'].rename(columns={'name': 'person_name'}))
     object_collection = preprocessing_object(dfs['object_collection'].rename(columns={'name': 'object_name'}))
-    production_place = preprocessing_production_place(dfs['production_place'].rename(columns={'name': 'production_place_name'}))
+    production_place = preprocessing_production_place(dfs['production_place']
+                                                      .rename(columns={'name': 'production_place_name'}))
     technique = preprocessing_technique(dfs['technique'].rename(columns={'name': 'technique_name'}))
     maker = preprocessing_maker(dfs['maker'])
     principal_maker = preprocessing_principal_maker(dfs['principal_maker'])
-    principal_all = pd.merge(dfs['principal_maker'][['id', 'object_id']], dfs['principal_maker_occupation'], how='left', on='id')
-    principal_maker_occupation = preprocessing_principal_maker_occupation(principal_all.rename(columns={'name': 'maker_occupation_name'}))
+    principal_all = pd.merge(dfs['principal_maker'][['id', 'object_id']],
+                             dfs['principal_maker_occupation'], how='left', on='id')
+    principal_maker_occupation = preprocessing_principal_maker_occupation(
+        principal_all.rename(columns={'name': 'maker_occupation_name'}))
 
     # train / testの前処理
     art = pd.concat([dfs['train'], dfs['test']], axis=0, sort=False).reset_index(drop=True)

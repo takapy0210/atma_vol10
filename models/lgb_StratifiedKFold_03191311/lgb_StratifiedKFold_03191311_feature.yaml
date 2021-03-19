@@ -29,6 +29,11 @@ FEATURES:
   - century_more_title_length_median
   - century_more_title_length_min
   - century_more_title_length_std
+  - century_sub_title_length_max
+  - century_sub_title_length_mean
+  - century_sub_title_length_median
+  - century_sub_title_length_min
+  - century_sub_title_length_std
   - century_title_length_max
   - century_title_length_mean
   - century_title_length_median
@@ -318,6 +323,11 @@ FEATURES:
   - principal_maker_lbl_enc_more_title_length_median
   - principal_maker_lbl_enc_more_title_length_min
   - principal_maker_lbl_enc_more_title_length_std
+  - principal_maker_lbl_enc_sub_title_length_max
+  - principal_maker_lbl_enc_sub_title_length_mean
+  - principal_maker_lbl_enc_sub_title_length_median
+  - principal_maker_lbl_enc_sub_title_length_min
+  - principal_maker_lbl_enc_sub_title_length_std
   - principal_maker_lbl_enc_title_length_max
   - principal_maker_lbl_enc_title_length_mean
   - principal_maker_lbl_enc_title_length_median
@@ -372,6 +382,58 @@ FEATURES:
   - size_h
   - size_t
   - size_w
+  - sub_title_length
+  - sub_title_svd_0
+  - sub_title_svd_1
+  - sub_title_svd_10
+  - sub_title_svd_11
+  - sub_title_svd_12
+  - sub_title_svd_13
+  - sub_title_svd_14
+  - sub_title_svd_15
+  - sub_title_svd_16
+  - sub_title_svd_17
+  - sub_title_svd_18
+  - sub_title_svd_19
+  - sub_title_svd_2
+  - sub_title_svd_20
+  - sub_title_svd_21
+  - sub_title_svd_22
+  - sub_title_svd_23
+  - sub_title_svd_24
+  - sub_title_svd_25
+  - sub_title_svd_26
+  - sub_title_svd_27
+  - sub_title_svd_28
+  - sub_title_svd_29
+  - sub_title_svd_3
+  - sub_title_svd_30
+  - sub_title_svd_31
+  - sub_title_svd_32
+  - sub_title_svd_33
+  - sub_title_svd_34
+  - sub_title_svd_35
+  - sub_title_svd_36
+  - sub_title_svd_37
+  - sub_title_svd_38
+  - sub_title_svd_39
+  - sub_title_svd_4
+  - sub_title_svd_40
+  - sub_title_svd_41
+  - sub_title_svd_42
+  - sub_title_svd_43
+  - sub_title_svd_44
+  - sub_title_svd_45
+  - sub_title_svd_46
+  - sub_title_svd_47
+  - sub_title_svd_48
+  - sub_title_svd_49
+  - sub_title_svd_5
+  - sub_title_svd_6
+  - sub_title_svd_7
+  - sub_title_svd_8
+  - sub_title_svd_9
+  - sub_title_word_count
   - technique_0_lbl_enc
   - technique_1_lbl_enc
   - technique_2_lbl_enc
@@ -433,6 +495,11 @@ FEATURES:
   - title_lang_ft_lbl_enc_more_title_length_median
   - title_lang_ft_lbl_enc_more_title_length_min
   - title_lang_ft_lbl_enc_more_title_length_std
+  - title_lang_ft_lbl_enc_sub_title_length_max
+  - title_lang_ft_lbl_enc_sub_title_length_mean
+  - title_lang_ft_lbl_enc_sub_title_length_median
+  - title_lang_ft_lbl_enc_sub_title_length_min
+  - title_lang_ft_lbl_enc_sub_title_length_std
   - title_lang_ft_lbl_enc_title_length_max
   - title_lang_ft_lbl_enc_title_length_mean
   - title_lang_ft_lbl_enc_title_length_median
