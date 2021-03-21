@@ -30,7 +30,7 @@ class Text2Vec(object):
         """fasttextを用いてテキストの言語を判定する
 
         Args:
-            col (str): 対象のカラム
+            col (str): 対象のカラム. スペース区切りのstr型を想定
             fasttext_model (model): fast_textのモデル. ref. https://fasttext.cc/docs/en/language-identification.html
                 呼び出し元でのロード方法
                     from fasttext import load_model
@@ -48,7 +48,7 @@ class Text2Vec(object):
         """テキストの長さを計算する
 
         Args:
-            col (str): 対象のカラム. スペース区切りのテキスト方を想定
+            col (str): 対象のカラム. スペース区切りのstr型を想定
 
         Returns:
             pd.DataFrame: 長さカラムを追加したDF. 単純な長さと単語数のDF
@@ -63,7 +63,7 @@ class Text2Vec(object):
         """特定の単語がテキストに存在するか否かの特徴量を生成する
 
         Args:
-            col (str): 対象のカラム
+            col (str): 対象のカラム. スペース区切りのstr型を想定
             words (list of str): 対象の単語リストの
 
         Returns:
@@ -81,7 +81,7 @@ class Text2Vec(object):
         colに指定されたカラムを対象として、TFIDFでベクトル化する
 
         Args:
-            col (str): TF-IDFでベクトル化するカラム. スペース区切りのテキスト方を想定
+            col (str): TF-IDFでベクトル化するカラム. スペース区切りのstr型を想定
             compression (str): 圧縮タイプ. [None, SVD, UMAP, TSNE]のいずれかに対応. Noneを指定すると生のTF-IDF値が返却される
                 TSNEの場合はdim_size=2にしないとエラーとなるので注意
 
@@ -120,7 +120,17 @@ class Text2Vec(object):
 
         return output_df
 
-    def lda_vec(self, col: str, topic_size: int = 20, passes: int = 10):
+    def lda_vec(self, col: str, topic_size: int = 20, passes: int = 10) -> pd.DataFrame:
+        """LDAを用いてトピックベクトルを取得する
+
+        Args:
+            col (str): 対象のカラム. スペース区切りのstr型を想定
+            topic_size (int, optional): トピック数. Defaults to 20.
+            passes (int, optional): passes数. Defaults to 10.
+
+        Returns:
+            pd.DataFrame: トピック分布DF
+        """
         # 辞書の作成
         texts = self.df[col].apply(lambda x: x.split())
         dic = gensim.corpora.Dictionary(texts)
